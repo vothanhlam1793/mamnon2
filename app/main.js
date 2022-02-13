@@ -20,7 +20,7 @@ function middle(keystone, dev, distDir){
     app.use(express.urlencoded({ extended: true }));
 
     // Route
-    app.use("/", require("./route/index"));
+    app.use("/", require("./route/index")(keystone));
 
     // Trả về giá trị app
     return app;

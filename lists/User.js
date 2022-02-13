@@ -13,10 +13,25 @@ const {
 const access = require("../setting/access").access;
 module.exports = {
     fields: {
-        name: { type: Text },
-        email: {
+        name: { 
+            type: Text 
+        },
+        username: {
             type: Text,
             isUnique: true,
+        },
+        phone: {
+            type: Text,
+            isUnique: true,
+        },
+        lophoc: {
+            type: Relationship,
+            ref: 'LopHoc',
+            many: true
+        },
+        email: {
+            type: Text,
+            // isUnique: true,
         },
         isAdmin: {
             type: Checkbox,
@@ -29,6 +44,9 @@ module.exports = {
         password: {
             type: Password,
         },
+        state: {
+            type: Text
+        }
     },
     // List-level access controls
     access: {

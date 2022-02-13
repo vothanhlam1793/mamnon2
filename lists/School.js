@@ -15,20 +15,11 @@ module.exports = {
         name: {
             type: Text,
         },
-        topic: {
-            type: Text,
-        },
-        rtsp: {
-            type: Text,
-        },
-        hls: {
-            type: Text,
-        },
-        state: {
-            type: Text,
+        description: {
+            type: Text
         }
     },
     access: {
-
+        
     },
 }

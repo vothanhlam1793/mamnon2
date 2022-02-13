@@ -16,11 +16,13 @@ module.exports = {
             type: Text,
         },
         school: {
-            type: Text,
+            type: Relationship,
+            ref: 'School',
         },
         cameras: {
             type: Relationship,
-            ref: 'Camera'
+            ref: 'Camera',
+            many: true
         }
     },
     access: {

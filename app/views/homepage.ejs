@@ -1,16 +1,53 @@
 <html>
     <head>
         <%- include("header.ejs", {title: "Camera Mầm Non"}); %>
+        <style>
+            video {
+                width: 100%;
+                height: auto;
+            }
+        </style>
+        <script src="static/js/video.js"></script>
+        <link href="static/css/video.css" rel="stylesheet" type="text/css">
+        <script src="static/js/jquery-1.10.2.min.js"></script>
+        <script src="static/js/jquery.ba-throttle-debounce.min.js"></script>
+        <script src="js/hls.min.js"></script>
+        <script src="js/video.js"></script>
+        <script src="js/cameraApple.js"></script>
+        <script src="js/cameraAndroid.js"></script>
     </head>
     <body>
         <%- include("menu.ejs"); %>
-        <div class="container-fluid">
+        <div class="container-fluid" id="app_home">
             <div class="mt-2">
-                <p>
-                    Danh sách camera của bạn hiện đang trống, bạn liên hệ kỹ thuật để được kiểm tra nhé!.
-                </p>
-                <!-- <button>Xem camera</button> -->
+                <div class="">
+                    <div class="">
+                        <div v-if="cameras.length > 0">
+                            <p>Danh sách camera của bạn</p>
+                            <div class="row">
+                                <div v-for="camera in cameras" class="col-md-6 col-sm-12 col-log-6 col-xl-4">
+                                    <div class="text-center mt-3 alert alert-secondary">
+                                            <label>{{camera.name}}</label>
+                                            <div v-if="device" class="">
+                                                <video-hls-apple :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-apple>
+                                            </div>
+                                            <div v-else  class="">
+                                                <video-hls-android :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-android>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <p>Hiện tài khoản bạn không có camera nào.</p>
+                            <p>Bạn <a href="/info">liên hệ kỹ thuật</a> để được hỗ trợ nhé!</p>
+                            <p>Xin lỗi vì sự cố này</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <script src="js/app.js"></script>
     </body>
 </html>

@@ -30,18 +30,26 @@ const keystone = new Keystone({
 
 // List
 const User = require("./lists/User");
+const Camera = require("./lists/Camera");
+const LopHoc = require("./lists/LopHoc");
+const School = require("./lists/School");
 
 
 // Tạo list user
 keystone.createList('User', User);
-// keystone.createList('User', User);
-// keystone.createList('User', User);
+keystone.createList('Camera', Camera);
+keystone.createList('LopHoc', LopHoc);
+keystone.createList('School', School);
 
 // Khởi tạo bảo mật
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
-  config: { protectIdentities: process.env.NODE_ENV === 'production' },
+  config: {
+    identityField: 'username',
+    secretField: 'password',
+  },
+  // config: { protectIdentities: process.env.NODE_ENV === 'production' },
 });
 
 class CretaApp {
