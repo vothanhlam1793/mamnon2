@@ -14,7 +14,20 @@ const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 
 // Setting
 const PROJECT_NAME = 'Mầm non';
-const adapterConfig = { mongoUri: 'mongodb://localhost/mamnon' };
+// const adapterConfig = { mongoUri: 'mongodb://localhost/mamnon' };
+
+// File enviroment
+const dotenv = require('dotenv')
+dotenv.config()
+
+const adapterConfig = { 
+  mongoUri: process.env.MONGO_URL,
+  "user": process.env.MONGO_USER,
+  "pass": process.env.MONGO_PASS,
+  authSource: process.env.MONGO_AUTH_SOURCE,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
 
 // Cookie, Session
 const { Session, Cookie } = require("./setting/session");

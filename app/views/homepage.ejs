@@ -31,7 +31,7 @@
                                             <div v-if="device" class="">
                                                 <video-hls-apple :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-apple>
                                             </div>
-                                            <div v-else  class="">
+                                            <div v-else class="">
                                                 <video-hls-android :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-android>
                                             </div>
                                         </div>
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-else>
+                        <div v-if="cameras.length == 0" >
                             <p>Hiện tài khoản bạn không có camera nào.</p>
                             <p>Bạn <a href="/info">liên hệ kỹ thuật</a> để được hỗ trợ nhé!</p>
                             <p>Xin lỗi vì sự cố này</p>
