@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 
 
 // Lưu trữ để phiên hoạt động chạy
-var db = new MongoClient("mongodb://node.creta.work:30042/mamnon-session",{
+var db = new MongoClient(process.env.MONGO_URL_SESSION,{
     auth: {
         "user": "black",
         "password": "asrkpvg7"

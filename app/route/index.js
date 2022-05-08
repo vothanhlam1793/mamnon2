@@ -17,6 +17,10 @@ module.exports = (keystone) => {
         res.render("login");
     })
 
+    router.get("/error", (req, res)=>{
+        res.render("error");
+    })
+
     router.get("/checkChangePassWord", redirectLogin, async (req, res)=>{
         QUERY_USER = `
             query getUser($id: ID!){
@@ -55,6 +59,7 @@ module.exports = (keystone) => {
         });
         res.send(c);
     });
+
     router.get("/checkAuth", (req, res)=>{
         if(req.session.keystoneItemId){
             res.send({
