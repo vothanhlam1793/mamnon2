@@ -76,6 +76,10 @@ module.exports = (keystone) => {
         res.render("info.ejs");
     });
 
+    router.get("/logout", (req, res)=> {
+        res.render("logout.ejs");
+    });
+
     router.get("/cameras", redirectLogin, async (req, res)=>{
         var QUERY_CAMERAS = `
         query getLopHocByUser($id: ID!){
