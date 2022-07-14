@@ -46,6 +46,7 @@ const User = require("./lists/User");
 const Camera = require("./lists/Camera");
 const LopHoc = require("./lists/LopHoc");
 const School = require("./lists/School");
+const Meta = require("./lists/Meta");
 
 
 // Tạo list user
@@ -53,6 +54,7 @@ keystone.createList('User', User);
 keystone.createList('Camera', Camera);
 keystone.createList('LopHoc', LopHoc);
 keystone.createList('School', School);
+keystone.createList('Meta', Meta);
 
 // Khởi tạo bảo mật
 const authStrategy = keystone.createAuthStrategy({

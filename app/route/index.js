@@ -108,5 +108,11 @@ module.exports = (keystone) => {
         });
         res.send(c);
     })
+    router.get("/manage", function(req, res){
+        res.render("manage/index");
+    })
+    router.get("/mNotify", function(req, res){
+        res.render("manage/notify");
+    })
     return router;
 };
