@@ -11,6 +11,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
+    "dev_win": "set WINDOWS=1&& set NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
+    "build_win": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production keystone build",
+    "start_win": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production keystone start",
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
     "build": "cross-env NODE_ENV=production keystone build",
     "start": "cross-env NODE_ENV=production keystone start",

@@ -88,12 +88,23 @@ module.exports = (keystone) => {
               lophoc {
                 id
                 name
+                school {
+                    id name stateMode {
+                        id name description estimate note
+                    }
+                }
                 cameras {
                   id
                   hls
                   rtsp
                   name
                   state
+                  stateMode {
+                    id name description estimate note
+                  }
+                }
+                stateMode {
+                    id name description estimate note
                 }
               }
             }

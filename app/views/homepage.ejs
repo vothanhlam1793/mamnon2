@@ -1,6 +1,7 @@
 <html>
-    <head>
-        <%- include("header.ejs", {title: "Camera Mầm Non"}); %>
+
+<head>
+    <%- include( "header.ejs", {title: "Camera Mầm Non"}); %>
         <style>
             video {
                 width: 100%;
@@ -15,39 +16,50 @@
         <script src="js/video.js"></script>
         <script src="js/cameraApple.js"></script>
         <script src="js/cameraAndroid.js"></script>
-    </head>
-    <body>
-        <%- include("menu.ejs"); %>
+</head>
+
+<body>
+    <%- include( "menu.ejs"); %>
         <div class="container-fluid" id="app_home">
-            <div class="mt-2">
-                <div class="">
-                    <div class="">
-                        <div v-if="cameras.length > 0">
-                            <p>Danh sách camera của bạn</p>
-                            <div class="row">
-                                <div v-for="camera in cameras" class="col-md-6 col-sm-12 col-log-6 col-xl-4">
-                                    <div class="text-center mt-3 alert alert-secondary">
-                                            <label>{{camera.name}}</label>
-                                            <div v-if="device" class="">
-                                                <video-hls-apple :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-apple>
-                                            </div>
-                                            <div v-else class="">
-                                                <video-hls-android :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-android>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div class="mt-2 jumbotron" v-if="school.stateMode">
+                <%- include('errorComponent.ejs'); %>
+            </div>
+            <div class="mt-2" v-else>
+                <div v-if="cameras.length > 0">
+                    <p>Danh sách camera của bạn</p>
+                    <div class="row">
+                        <div v-for="camera in cameras" class="col-md-6 col-sm-12 col-log-6 col-xl-4">
+                            <div class="text-center mt-3 alert alert-secondary" v-if="camera.stateMode == undefined">
+                                <label>{{camera.name}}</label>
+                                <div v-if="device" class="">
+                                    <video-hls-apple :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-apple>
+                                </div>
+                                <div v-else class="">
+                                    <video-hls-android :id="camera.id" :stream_url="camera.hls" poster="video/poster.jpg"></video-hls-android>
                                 </div>
                             </div>
-                        </div>
-                        <div v-if="cameras.length == 0" >
-                            <p>Hiện tài khoản bạn không có camera nào.</p>
-                            <p>Bạn <a href="/info">liên hệ kỹ thuật</a> để được hỗ trợ nhé!</p>
-                            <p>Xin lỗi vì sự cố này</p>
+                            <div class="text-center mt-3 alert alert-danger" v-else>
+                                <br>
+                                <br>
+                                <h3>{{ camera.stateMode.name }}</h3>
+                                <p>{{camera.stateMode.description}}</p>
+                                <p>Dự kiến hòan thành: Vào lúc {{getHourFromISOWithOffset(camera.stateMode.estimate)}} - ngày <strong>{{convertISOToNormalDate(camera.stateMode.estimate)}}</strong>
+                                </p>
+                                <p v-if="school.stateMode.note">{{school.stateMode.note}}</p>
+                                <br>
+                                <br>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div v-else>
+                    <p>Hiện tài khoản bạn không có camera nào.</p>
+                    <p>Bạn <a href="/info">liên hệ kỹ thuật</a> để được hỗ trợ nhé!</p>
+                    <p>Xin lỗi vì sự cố này</p>
                 </div>
             </div>
         </div>
         <script src="js/app.js"></script>
-    </body>
+</body>
+
 </html>

@@ -15,19 +15,14 @@ module.exports = {
         name: {
             type: Text,
         },
-        school: {
-            type: Relationship,
-            ref: 'School',
+        description: {
+            type: Text,
         },
-        cameras: {
-            type: Relationship,
-            ref: 'Camera',
-            many: true
+        estimate: {
+            type: DateTime,
         },
-        stateMode: {
-            type: Relationship,
-            ref: "Notify",
-            many: false
+        note: {
+            type: Text
         }
     },
     access: {

@@ -3,15 +3,29 @@ const { MongoClient } = require('mongodb');
 
 
 // Lưu trữ để phiên hoạt động chạy
-var db = new MongoClient(process.env.MONGO_URL_SESSION,{
-    auth: {
-        "user": "black",
-        "password": "asrkpvg7"
-    },
-    authSource: "admin",
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+// console.log(process.env);
+if(process.env.WINDOWS){
+    var db = new MongoClient(process.env.MONGO_URL_SESSION,{
+        auth: {
+            "username": "black",
+            "password": "asrkpvg7"
+        },
+        authSource: "admin",
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+} else {
+    var db = new MongoClient(process.env.MONGO_URL_SESSION,{
+        auth: {
+            "user": "black",
+            "password": "asrkpvg7"
+        },
+        authSource: "admin",
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+}
+
 
 // Nơi lúu trữ
 exports.Session = {

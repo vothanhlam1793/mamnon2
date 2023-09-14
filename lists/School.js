@@ -17,6 +17,11 @@ module.exports = {
         },
         description: {
             type: Text
+        },
+        stateMode: {
+            type: Relationship,
+            ref: "Notify",
+            many: false
         }
     },
     access: {

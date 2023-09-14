@@ -26,6 +26,11 @@ module.exports = {
         },
         state: {
             type: Text,
+        },
+        stateMode: {
+            type: Relationship,
+            ref: "Notify",
+            many: false
         }
     },
     access: {

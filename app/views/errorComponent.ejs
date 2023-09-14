@@ -1,0 +1,13 @@
+<div class="">
+    <h1>{{ school.stateMode.name }}</h1>
+</div>
+<div>
+    <p>{{school.stateMode.description}}</p>
+    <p>Dự kiến hòan thành: Vào lúc {{getHourFromISOWithOffset(school.stateMode.estimate)}} - ngày <strong>{{convertISOToNormalDate(school.stateMode.estimate)}}</strong>
+    </p>
+    <br>
+    <h5>TRƯỜNG MẦM NON NGỌC HOÀNG</h5>
+    <p>* Điện thoại: <strong>0933 064 964</strong></p>
+    <br>
+    <p v-if="school.stateMode.note">{{school.stateMode.note}}</p>
+</div>

@@ -25,8 +25,8 @@ const adapterConfig = {
   "user": process.env.MONGO_USER,
   "pass": process.env.MONGO_PASS,
   authSource: process.env.MONGO_AUTH_SOURCE,
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true
 };
 
 // Cookie, Session
@@ -47,7 +47,7 @@ const Camera = require("./lists/Camera");
 const LopHoc = require("./lists/LopHoc");
 const School = require("./lists/School");
 const Meta = require("./lists/Meta");
-
+const Notify = require("./lists/Notify");
 
 // Tạo list user
 keystone.createList('User', User);
@@ -55,6 +55,7 @@ keystone.createList('Camera', Camera);
 keystone.createList('LopHoc', LopHoc);
 keystone.createList('School', School);
 keystone.createList('Meta', Meta);
+keystone.createList('Notify', Notify);
 
 // Khởi tạo bảo mật
 const authStrategy = keystone.createAuthStrategy({
