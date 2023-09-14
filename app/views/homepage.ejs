@@ -39,15 +39,11 @@
                                 </div>
                             </div>
                             <div class="text-center mt-3 alert alert-danger" v-else>
-                                <br>
-                                <br>
                                 <h3>{{ camera.stateMode.name }}</h3>
                                 <p>{{camera.stateMode.description}}</p>
                                 <p>Dự kiến hòan thành: Vào lúc {{getHourFromISOWithOffset(camera.stateMode.estimate)}} - ngày <strong>{{convertISOToNormalDate(camera.stateMode.estimate)}}</strong>
                                 </p>
-                                <p v-if="school.stateMode.note">{{school.stateMode.note}}</p>
-                                <br>
-                                <br>
+                                <p v-if="camera.stateMode.note">{{camera.stateMode.note}}</p>
                             </div>
                         </div>
                     </div>
