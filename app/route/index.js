@@ -10,6 +10,7 @@ function redirectLogin(req, res, next){
 module.exports = (keystone) => {
     var router = express.Router();
     router.get("/", redirectLogin, (req, res)=>{
+        // console.log(keystone);
         res.render("homepage");
     })
     
