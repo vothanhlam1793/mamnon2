@@ -76,8 +76,13 @@ module.exports = keystone => {
     }
   })
 
-  router.get('/info', (req, res) => {
-    res.render('info.ejs')
+  router.get('/info', async (req, res) => {
+    const { data } = await keystone.executeGraphQL({
+      context: keystone.createContext({ skipAccessControl: true }),
+      query: `query { allSettings { id hotline zaloId contactName workTime workDays } }`
+    });
+    const setting = data.allSettings[0] || {};
+    res.render('info.ejs', { setting });
   })
 
   router.get('/logout', (req, res) => {

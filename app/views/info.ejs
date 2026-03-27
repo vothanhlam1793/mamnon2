@@ -8,16 +8,40 @@
             <div class="jumbotron">
                 <h1>Hỗ trợ khách hàng</h1>
                 <p>Khi gặp sự cố về <strong>đăng nhập</strong> hoặc <strong>cần hỗ trợ</strong>. Hãy liên hệ kỹ thuật qua những kênh sau:</p>
-                <p>Gọi điện trực tiếp: <a href="tel: 0862270717" class="btn btn-success">Gọi 0862 27 07 17</a></p>
-                <p>Liên lạc qua Zalo: <a href="https://zalo.me/0862270717" class="btn btn-primary">Zalo: 0862 27 07 17</a></p>
-
-                <p>Thời gian làm việc: Thứ 2 - thứ 6</p>
-                <ul>
-                    <li>Sáng: 8g - 11g30</li>
-                    <li>Chiều: 13g30 - 17g30</li>
-                </ul>
+                
+                <% if (setting) { %>
+                    <p>Gọi điện trực tiếp: <a href="tel: <%= setting.hotline %>" class="btn btn-success">Gọi <%= setting.hotline %></a></p>
+                    <p>Liên lạc qua Zalo: <a href="https://chat.zalo.me/?phone=<%= setting.zaloId %>" class="btn btn-primary">Zalo: <%= setting.zaloId %></a></p>
+                    <p>Người liên hệ: <strong><%= setting.contactName %></strong></p>
+                    
+                    <% if (setting.workDays || setting.workTime) { %>
+                        <p>Thời gian làm việc: <%= setting.workDays || 'Thứ 2 - thứ 6' %></p>
+                        <ul>
+                            <% if (setting.workTime) { %>
+                                <li>Sáng: <%= setting.workTime.split('/')[0] %></li>
+                                <li>Chiều: <%= setting.workTime.split('/')[1] || setting.workTime %></li>
+                            <% } else { %>
+                                <li>Sáng: 8g - 11g30</li>
+                                <li>Chiều: 13g30 - 17g30</li>
+                            <% } %>
+                        </ul>
+                    <% } %>
+                <% } else { %>
+                    <p>Hệ thống chưa có thông tin liên hệ. Vui lòng liên hệ quản trị viên.</p>
+                <% } %>
+                
                 <p>Trân trọng./.</p>
             </div>
         </div>
+        
+        <script>
+        (function() {
+            var ua = navigator.userAgent.toLowerCase();
+            if (ua.includes('zalo') || ua.includes('zaloapp')) {
+                var currentUrl = window.location.href;
+                window.location.href = 'intent://' + currentUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.zing.zalo;end';
+            }
+        })();
+        </script>
     </body>
 </html>
