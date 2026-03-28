@@ -107,8 +107,12 @@
                 // Use intent to open in default browser
                 window.location.href = 'intent://' + currentUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;end';
             } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // iOS - try to open in Safari
-                window.location.href = currentUrl;
+                // iOS - try iframe approach to open Safari
+                var iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = currentUrl;
+                document.body.appendChild(iframe);
+                setTimeout(function() { document.body.removeChild(iframe); }, 1000);
             } else {
                 // Desktop or other - just open new tab
                 window.open(currentUrl, '_system');
