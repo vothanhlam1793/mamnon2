@@ -107,12 +107,16 @@
                 // Use intent to open in default browser
                 window.location.href = 'intent://' + currentUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;end';
             } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // iOS - try iframe approach to open Safari
-                var iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = currentUrl;
-                document.body.appendChild(iframe);
-                setTimeout(function() { document.body.removeChild(iframe); }, 1000);
+                // iOS - Copy URL to clipboard and show instruction
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(currentUrl).then(function() {
+                        alert('Đã copy URL! Mở Safari và dán vào thanh địa chỉ.');
+                    }).catch(function() {
+                        prompt('Copy URL này và mở bằng Safari:', currentUrl);
+                    });
+                } else {
+                    prompt('Copy URL này và mở bằng Safari:', currentUrl);
+                }
             } else {
                 // Desktop or other - just open new tab
                 window.open(currentUrl, '_system');
