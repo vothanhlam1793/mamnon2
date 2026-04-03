@@ -34,31 +34,21 @@
         banner.id = 'webview-banner';
         banner.style.cssText = `
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             left: 20px;
             right: 20px;
             background: #fff;
             color: #333;
-            padding: 15px 20px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             z-index: 999999;
             font-family: 'Nunito', sans-serif;
-            border-radius: 20px;
-            border: 2px solid #ff6b6b;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-radius: 18px;
+            border-left: 5px solid #ff6b6b;
         `;
-
-        const iconMap = {
-            zalo: '💬',
-            messenger: '💭',
-            facebook: '📘',
-            viber: '💜',
-            telegram: '✈️'
-        };
 
         const appLabel = {
             zalo: 'Zalo',
@@ -69,35 +59,35 @@
         };
 
         banner.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px;">
-                <span style="font-size: 28px;">${iconMap[appName] || '📱'}</span>
-                <div>
-                    <div style="font-weight: 700; font-size: 16px; color: #ff6b6b;">Đang mở trong ${appLabel[appName]}</div>
-                    <div style="font-size: 13px; color: #666;">Mở bằng trình duyệt để xem camera mượt hơn nhé! ✨</div>
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <div style="font-size: 24px;">📱</div>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="font-weight: 800; font-size: 14px; color: #ff6b6b;">Đang mở trong ${appLabel[appName]}</div>
+                    <div style="font-size: 12px; color: #666; line-height: 1.2;">Mở bằng trình duyệt để xem mượt hơn bạn nhé!</div>
                 </div>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 8px; align-items: center;">
                 <button id="open-browser-btn" style="
-                    background: #ff6b6b;
+                    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
                     color: white;
                     border: none;
-                    padding: 10px 20px;
-                    border-radius: 25px;
+                    padding: 8px 15px;
+                    border-radius: 20px;
                     font-weight: 700;
                     cursor: pointer;
-                    font-size: 14px;
+                    font-size: 13px;
                     white-space: nowrap;
                     box-shadow: 0 4px 10px rgba(255,107,107,0.3);
-                ">🌐 Mở trình duyệt</button>
+                ">Mở ngay</button>
                 <button id="close-banner-btn" style="
-                    background: #f0f0f0;
-                    color: #999;
+                    background: #f5f5f5;
+                    color: #bbb;
                     border: none;
-                    width: 35px;
-                    height: 35px;
+                    width: 28px;
+                    height: 28px;
                     border-radius: 50%;
                     cursor: pointer;
-                    font-size: 18px;
+                    font-size: 16px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -113,17 +103,22 @@
             
             // Check if Android
             if (/android/i.test(navigator.userAgent)) {
-                // Use intent to open in default browser
                 window.location.href = 'intent://' + currentUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;end';
-            } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // iOS - Instruction for Safari
-                alert('Vui lòng copy link này và mở bằng trình duyệt Safari nhé! ❤️\n\n' + currentUrl);
             } else {
-                window.open(currentUrl, '_blank');
+                // For iOS, instead of alert, we show a nice hint
+                banner.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                        <div style="font-size: 24px;">💡</div>
+                        <div style="font-size: 13px; color: #444; font-weight: 600;">
+                            Bấm vào dấu <span style="color:#ff6b6b; font-weight:800;">...</span> ở góc trên rồi chọn <span style="color:#ff6b6b; font-weight:800;">"Mở bằng Safari"</span> bạn nhé! ❤️
+                        </div>
+                    </div>
+                    <button id="close-banner-btn-2" style="background: #f5f5f5; color: #bbb; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer;">×</button>
+                `;
+                document.getElementById('close-banner-btn-2').addEventListener('click', () => banner.remove());
             }
         });
 
-        // Event: Close banner
         document.getElementById('close-banner-btn').addEventListener('click', function() {
             banner.remove();
             localStorage.setItem('webview-banner-dismissed', 'true');
@@ -139,64 +134,61 @@
         prompt.id = 'pwa-install-prompt';
         prompt.style.cssText = `
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             left: 20px;
             right: 20px;
             background: #fff;
-            color: #333;
-            padding: 15px 20px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             z-index: 999998;
             font-family: 'Nunito', sans-serif;
-            border-radius: 20px;
-            border: 2px solid #4ecdc4;
-            flex-wrap: wrap;
-            gap: 10px;
+            border-radius: 18px;
+            border-left: 5px solid #4ecdc4;
         `;
 
         const content = isIOS ? `
-            <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-                <img src="images/student.png" style="width: 45px; height: 45px; border-radius: 10px;">
-                <div>
-                    <div style="font-weight: 700; font-size: 15px; color: #4ecdc4;">Thêm vào màn hình chính</div>
-                    <div style="font-size: 12px; color: #666;">Bấm <span style="font-weight: bold;">Chia sẻ 📤</span> rồi chọn <span style="font-weight: bold;">'Thêm vào MH chính'</span> để xem camera nhanh hơn nhé! 🌸</div>
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <img src="images/student.png" style="width: 40px; height: 40px; border-radius: 10px;">
+                <div style="display: flex; flex-direction: column;">
+                    <div style="font-weight: 800; font-size: 14px; color: #4ecdc4;">Camera Mầm Non</div>
+                    <div style="font-size: 11px; color: #666; line-height: 1.2;">Bấm <b>Chia sẻ 📤</b> rồi chọn <b>'Thêm vào MH chính'</b> để xem nhanh nhé! 🌸</div>
                 </div>
             </div>
         ` : `
-            <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-                <img src="images/student.png" style="width: 45px; height: 45px; border-radius: 10px;">
-                <div>
-                    <div style="font-weight: 700; font-size: 15px; color: #4ecdc4;">Cài đặt ứng dụng Mầm Non</div>
-                    <div style="font-size: 12px; color: #666;">Cài đặt để nhận thông báo và xem camera tiện lợi hơn! 🍓</div>
+            <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
+                <img src="images/student.png" style="width: 40px; height: 40px; border-radius: 10px;">
+                <div style="display: flex; flex-direction: column;">
+                    <div style="font-weight: 800; font-size: 14px; color: #4ecdc4;">Camera Mầm Non</div>
+                    <div style="font-size: 11px; color: #666; line-height: 1.2;">Cài đặt để xem camera tiện lợi và nhận thông báo nhé! 🍓</div>
                 </div>
             </div>
             <button id="install-pwa-btn" style="
-                background: #4ecdc4;
+                background: linear-gradient(135deg, #4ecdc4 0%, #45b7af 100%);
                 color: white;
                 border: none;
-                padding: 10px 18px;
-                border-radius: 25px;
+                padding: 8px 15px;
+                border-radius: 20px;
                 font-weight: 700;
                 cursor: pointer;
-                font-size: 14px;
+                font-size: 13px;
                 white-space: nowrap;
                 box-shadow: 0 4px 10px rgba(78,205,196,0.3);
-            ">Cài đặt ngay</button>
+            ">Cài đặt</button>
         `;
 
         prompt.innerHTML = content + `
             <button id="close-pwa-prompt" style="
-                background: #f0f0f0;
-                color: #999;
+                background: #f5f5f5;
+                color: #bbb;
                 border: none;
-                width: 30px;
-                height: 30px;
+                width: 28px;
+                height: 28px;
                 border-radius: 50%;
                 cursor: pointer;
-                font-size: 16px;
+                margin-left: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;

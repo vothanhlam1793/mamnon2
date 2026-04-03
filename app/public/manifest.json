@@ -1,6 +1,6 @@
 {
-  "name": "Mầm Non Camera",
-  "short_name": "Mầm Non",
+  "name": "Camera Mầm Non",
+  "short_name": "Camera MN",
   "description": "Ứng dụng xem camera trường mầm non",
   "start_url": "/",
   "display": "standalone",
