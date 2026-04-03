@@ -3,8 +3,14 @@ Vue.component('video-hls-apple', {
   data: function () {
     return {
       zoomLevel: 1,
-      maxZoom: 3,
-      minZoom: 1
+      maxZoom: 4,
+      minZoom: 1,
+      translateX: 0,
+      translateY: 0,
+      touchStartX: 0,
+      touchStartY: 0,
+      initialPinchDistance: 0,
+      isDragging: false
     }
   },
   created: function () {
@@ -14,28 +20,93 @@ Vue.component('video-hls-apple', {
     })
   },
   methods: {
+    handleTouchStart: function (e) {
+      if (e.touches.length === 1) {
+        this.isDragging = true
+        this.touchStartX = e.touches[0].clientX - this.translateX
+        this.touchStartY = e.touches[0].clientY - this.translateY
+      } else if (e.touches.length === 2) {
+        this.isDragging = false
+        this.initialPinchDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        )
+      }
+    },
+    handleTouchMove: function (e) {
+      if (this.zoomLevel <= 1 && e.touches.length === 1) return
+
+      if (e.touches.length === 1 && this.isDragging) {
+        e.preventDefault()
+        this.translateX = e.touches[0].clientX - this.touchStartX
+        this.translateY = e.touches[0].clientY - this.touchStartY
+        this.constrainTranslation()
+        this.applyTransform()
+      } else if (e.touches.length === 2) {
+        e.preventDefault()
+        const currentDistance = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY
+        )
+        const zoomDelta = currentDistance / this.initialPinchDistance
+        const newZoom = Math.min(Math.max(this.zoomLevel * zoomDelta, this.minZoom), this.maxZoom)
+        
+        if (newZoom !== this.zoomLevel) {
+          this.zoomLevel = newZoom
+          this.initialPinchDistance = currentDistance
+          this.constrainTranslation()
+          this.applyTransform()
+        }
+      }
+    },
+    handleTouchEnd: function () {
+      this.isDragging = false
+    },
+    constrainTranslation: function () {
+      if (this.zoomLevel <= 1) {
+        this.translateX = 0
+        this.translateY = 0
+        return
+      }
+      
+      const video = document.getElementById('mo' + this.$props.id)
+      if (!video) return
+
+      const overflowX = (video.clientWidth * this.zoomLevel - video.clientWidth) / 2
+      const overflowY = (video.clientHeight * this.zoomLevel - video.clientHeight) / 2
+
+      this.translateX = Math.min(Math.max(this.translateX, -overflowX), overflowX)
+      this.translateY = Math.min(Math.max(this.translateY, -overflowY), overflowY)
+    },
+    applyTransform: function () {
+      var video = document.getElementById('mo' + this.$props.id)
+      if (video) {
+        video.style.transform = 'translate(' + this.translateX + 'px, ' + this.translateY + 'px) scale(' + this.zoomLevel + ')'
+        video.style.transition = this.isDragging ? 'none' : 'transform 0.1s ease'
+      }
+    },
     zoomIn: function () {
       if (this.zoomLevel < this.maxZoom) {
         this.zoomLevel = parseFloat((this.zoomLevel + 0.5).toFixed(1))
-        this.applyZoom()
+        this.constrainTranslation()
+        this.applyTransform()
       }
     },
     zoomOut: function () {
       if (this.zoomLevel > this.minZoom) {
         this.zoomLevel = parseFloat((this.zoomLevel - 0.5).toFixed(1))
-        this.applyZoom()
+        this.constrainTranslation()
+        this.applyTransform()
       }
     },
     resetZoom: function () {
       this.zoomLevel = 1
-      this.applyZoom()
+      this.translateX = 0
+      this.translateY = 0
+      this.applyTransform()
     },
     applyZoom: function () {
-      var video = document.getElementById('mo' + this.$props.id)
-      if (video) {
-        video.style.transform = 'scale(' + this.zoomLevel + ')'
-        video.style.transition = 'transform 0.3s ease'
-      }
+      this.applyTransform()
     },
     newplayer(data) {
       var poster = data.poster
@@ -107,7 +178,7 @@ Vue.component('video-hls-apple', {
       $('#' + this.$props.id).replaceWith(vidplayer)
       vjs.autoSetup()
       this.resizeVideo()
-      this.applyZoom() // Apply zoom after player is created
+      this.applyTransform()
       setInterval(this.resizeVideo, 1500)
     },
     checkm3u8available_helper(hlsdata, depth) {
@@ -166,21 +237,25 @@ Vue.component('video-hls-apple', {
     }
   },
   template: `
-        <div class="video-container-wrapper" style="position: relative;">
-            <div :id="'border' + id" style="overflow: hidden; border-radius: 12px; background: #000;">
+        <div class="video-container-wrapper" style="position: relative; touch-action: none;">
+            <div :id="'border' + id" 
+                 style="overflow: hidden; border-radius: 12px; background: #000;"
+                 @touchstart="handleTouchStart"
+                 @touchmove="handleTouchMove"
+                 @touchend="handleTouchEnd">
                 <div :id="id"></div>
             </div>
             
             <!-- Zoom Controls Overlay -->
             <div class="zoom-controls" style="position: absolute; bottom: 50px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;">
-                <button @click="zoomIn" class="btn btn-sm btn-light" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; opacity: 0.8; font-weight: bold;">+</button>
-                <button @click="zoomOut" class="btn btn-sm btn-light" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; opacity: 0.8; font-weight: bold;">-</button>
-                <button @click="resetZoom" class="btn btn-sm btn-light" style="border-radius: 10px; height: 32px; padding: 0 8px; opacity: 0.8; font-size: 10px; font-weight: bold;">1:1</button>
+                <button @click="zoomIn" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee;">+</button>
+                <button @click="zoomOut" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee;">-</button>
+                <button @click="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 12px; height: 32px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b;">1:1</button>
             </div>
             
             <!-- Zoom Indicator -->
-            <div v-if="zoomLevel > 1" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; pointer-events: none;">
-                Zoom: {{ zoomLevel }}x
+            <div v-if="zoomLevel > 1" style="position: absolute; top: 12px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                Zoom: {{ zoomLevel.toFixed(1) }}x
             </div>
         </div>
     `
