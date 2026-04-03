@@ -78,16 +78,24 @@
       .grid-9 .grid-item { flex: 0 0 33.333333%; max-width: 33.333333%; }
       
       .grid-4 .camera-card, .grid-9 .camera-card {
-        padding: 5px;
-        border-radius: 8px;
+        padding: 0;
+        border-radius: 4px;
         margin-bottom: 0;
+        background: #000;
+        border: 1px solid #333;
       }
       .grid-4 .camera-name, .grid-9 .camera-name {
-        font-size: 11px;
-        margin-bottom: 5px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        background: rgba(0,0,0,0.5);
+        color: #fff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        margin-bottom: 0;
+        z-index: 10;
+        pointer-events: none;
       }
       .grid-mode-selector {
         background: white;
@@ -167,6 +175,7 @@
               <div
                 class="camera-card text-center"
                 v-if="camera.stateMode == undefined"
+                style="position: relative;"
               >
                 <label class="camera-name">{{ camera.name }}</label>
                 <div v-if="device" class="">
