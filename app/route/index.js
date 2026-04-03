@@ -9,21 +9,21 @@ function redirectLogin(req, res, next) {
 
 module.exports = keystone => {
   var router = express.Router()
-  async function requireAdmin(req, res, next) {
+  async function requireStaffOrAdmin(req, res, next) {
     if (!req.session.keystoneItemId) {
       return res.redirect('/login')
     }
     try {
       const result = await keystone.executeGraphQL({
         context: keystone.createContext({ skipAccessControl: true }),
-        query: `query ($id: ID!) { User(where: { id: $id }) { id isAdmin } }`,
+        query: `query ($id: ID!) { User(where: { id: $id }) { id isAdmin role } }`,
         variables: { id: req.session.keystoneItemId }
       })
       const user = result && result.data && result.data.User
-      if (user && user.isAdmin === true) {
+      if (user && (user.isAdmin === true || user.role === 'ADMIN' || user.role === 'STAFF')) {
         return next()
       }
-      return res.status(403).send('Forbidden')
+      return res.redirect('/')
     } catch (e) {
       return res.status(500).send('Server error')
     }
@@ -147,10 +147,10 @@ module.exports = keystone => {
     })
     res.send(c)
   })
-  router.get('/manage', requireAdmin, function (req, res) {
+  router.get('/manage', requireStaffOrAdmin, function (req, res) {
     res.render('manage/index')
   })
-  router.get('/mNotify', requireAdmin, function (req, res) {
+  router.get('/mNotify', requireStaffOrAdmin, function (req, res) {
     res.render('manage/notify')
   })
   return router

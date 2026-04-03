@@ -77,6 +77,7 @@ Vue.component("create-user", {
                     username: "${this.user.phone}",
                     password: "${this.user.phone}",
                     state: "NORMAL",
+                    role: "PARENT",
                     lophoc: {
                         connect: ${qllh}
                     }
@@ -160,6 +161,7 @@ const store = new Vuex.Store({
                     }
                     }
                     state
+                    role
                 }
                 }
             `).then(function(data){

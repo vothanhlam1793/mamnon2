@@ -41,6 +41,15 @@ module.exports = {
             update: access.userIsAdmin,
             },
         },
+        role: {
+            type: Select,
+            options: [
+                { value: 'PARENT', label: 'Phụ huynh' },
+                { value: 'STAFF', label: 'Nhân viên' },
+                { value: 'ADMIN', label: 'Quản trị' },
+            ],
+            defaultValue: 'PARENT',
+        },
         password: {
             type: Password,
         },
