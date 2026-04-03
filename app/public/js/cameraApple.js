@@ -131,7 +131,7 @@ Vue.component('video-hls-apple', {
       var autoplay = 'autoplay',
         loop = '',
         cast = '',
-        controls = 'controls'
+        controls = '' // Disable native controls
       var hlsurl = data.stream_url
       var poster = data.poster
       var urlvars = this.getUrlVars()
@@ -152,13 +152,6 @@ Vue.component('video-hls-apple', {
         }
       }
 
-      if (autoplay == 'autoplay') {
-        if (urlvars['controls']) {
-          if (urlvars['controls'] == 'false') {
-            controls = ''
-          }
-        }
-      }
       var vidplayer =
         '<video ' +
         controls +
@@ -168,11 +161,11 @@ Vue.component('video-hls-apple', {
         this.$props.id +
         '" class="video-js vjs-default-skin" preload="none" ' +
         autoplay +
-        ' playsinline ' +
+        ' playsinline muted ' +
         loop +
         ' poster="' +
         poster +
-        '" style="width:100%; height:auto; display:block; border-radius:12px;" data-setup=\'{ }\'>  <source src="' +
+        '" style="width:100%; height:auto; display:block; border-radius:12px; pointer-events:none;" data-setup=\'{ }\'>  <source src="' +
         hlsurl +
         "\" type='video/mp4' /></video>"
       $('#' + this.$props.id).replaceWith(vidplayer)
@@ -239,22 +232,27 @@ Vue.component('video-hls-apple', {
   template: `
         <div class="video-container-wrapper" style="position: relative; touch-action: none;">
             <div :id="'border' + id" 
-                 style="overflow: hidden; border-radius: 12px; background: #000;"
-                 @touchstart="handleTouchStart"
-                 @touchmove="handleTouchMove"
-                 @touchend="handleTouchEnd">
+                 style="overflow: hidden; border-radius: 12px; background: #000; position: relative;">
                 <div :id="id"></div>
+                
+                <!-- Touch Overlay: Captures all gestures to prevent video pausing/native player -->
+                <div class="touch-overlay" 
+                     style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 5;"
+                     @touchstart.stop.prevent="handleTouchStart"
+                     @touchmove.stop.prevent="handleTouchMove"
+                     @touchend.stop.prevent="handleTouchEnd">
+                </div>
             </div>
             
             <!-- Zoom Controls Overlay -->
-            <div class="zoom-controls" style="position: absolute; bottom: 50px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;">
-                <button @click="zoomIn" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee;">+</button>
-                <button @click="zoomOut" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee;">-</button>
-                <button @click="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 12px; height: 32px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b;">1:1</button>
+            <div class="zoom-controls" style="position: absolute; bottom: 15px; right: 10px; display: flex; flex-direction: column; gap: 8px; z-index: 10;">
+                <button @click.stop="zoomIn" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee; font-size: 18px;">+</button>
+                <button @click.stop="zoomOut" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee; font-size: 18px;">-</button>
+                <button @click.stop="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 12px; height: 32px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b;">1:1</button>
             </div>
             
             <!-- Zoom Indicator -->
-            <div v-if="zoomLevel > 1" style="position: absolute; top: 12px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+            <div v-if="zoomLevel > 1" style="position: absolute; top: 12px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;">
                 Zoom: {{ zoomLevel.toFixed(1) }}x
             </div>
         </div>

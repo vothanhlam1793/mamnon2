@@ -119,33 +119,40 @@ Vue.component('video-hls-android', {
   template: `
         <div class="video-container-wrapper">
             <div class="video-overflow-hidden" 
-                 style="overflow: hidden; border-radius: 12px; position: relative; background: #000; touch-action: none;"
-                 @touchstart="handleTouchStart"
-                 @touchmove="handleTouchMove"
-                 @touchend="handleTouchEnd">
+                 style="overflow: hidden; border-radius: 12px; position: relative; background: #000; touch-action: none;">
+                
                 <video :id='id'
-                    controls
                     loop
                     autoplay
                     playsinline
+                    muted
                     :style="{ 
                         transform: 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + zoomLevel + ')', 
                         transition: isDragging ? 'none' : 'transform 0.1s ease',
                         width: '100%',
                         height: 'auto',
-                        display: 'block'
+                        display: 'block',
+                        pointerEvents: 'none'
                     }"
                 ></video>
+
+                <!-- Touch Overlay: Captures all gestures to prevent video pausing/native player -->
+                <div class="touch-overlay" 
+                     style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 5;"
+                     @touchstart.stop.prevent="handleTouchStart"
+                     @touchmove.stop.prevent="handleTouchMove"
+                     @touchend.stop.prevent="handleTouchEnd">
+                </div>
                 
                 <!-- Zoom Controls Overlay -->
-                <div class="zoom-controls" style="position: absolute; bottom: 50px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;">
-                    <button @click="zoomIn" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee;">+</button>
-                    <button @click="zoomOut" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 36px; height: 36px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee;">-</button>
-                    <button @click="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 12px; height: 32px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b;">1:1</button>
+                <div class="zoom-controls" style="position: absolute; bottom: 15px; right: 10px; display: flex; flex-direction: column; gap: 8px; z-index: 10;">
+                    <button @click.stop="zoomIn" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee; font-size: 18px;">+</button>
+                    <button @click.stop="zoomOut" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee; font-size: 18px;">-</button>
+                    <button @click.stop="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 12px; height: 32px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b;">1:1</button>
                 </div>
                 
                 <!-- Zoom Indicator -->
-                <div v-if="zoomLevel > 1" style="position: absolute; top: 12px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                <div v-if="zoomLevel > 1" style="position: absolute; top: 12px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;">
                     Zoom: {{ zoomLevel.toFixed(1) }}x
                 </div>
             </div>
