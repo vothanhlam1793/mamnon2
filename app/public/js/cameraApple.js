@@ -81,11 +81,8 @@ Vue.component('video-hls-apple', {
     applyTransform: function () {
       var video = document.getElementById('mo' + this.$props.id)
       if (video) {
-        video.style.transform = 'translate(-50%, -50%) translate(' + this.translateX + 'px, ' + this.translateY + 'px) scale(' + this.zoomLevel + ')'
+        video.style.transform = 'translate(' + this.translateX + 'px, ' + this.translateY + 'px) scale(' + this.zoomLevel + ')'
         video.style.transition = this.isDragging ? 'none' : 'transform 0.1s ease'
-        video.style.position = 'absolute'
-        video.style.top = '50%'
-        video.style.left = '50%'
       }
     },
     zoomIn: function () {
@@ -168,7 +165,7 @@ Vue.component('video-hls-apple', {
         loop +
         ' poster="' +
         poster +
-        '" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; border-radius:8px; pointer-events:none;" data-setup=\'{ }\'>  <source src="' +
+        '" style="width:100%; height:100%; object-fit:contain; border-radius:8px; pointer-events:none; display:block;" data-setup=\'{ }\'>  <source src="' +
         hlsurl +
         "\" type='video/mp4' /></video>"
       $('#' + this.$props.id).replaceWith(vidplayer)
