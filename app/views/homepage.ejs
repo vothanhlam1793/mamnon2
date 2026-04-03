@@ -230,6 +230,7 @@
                   <video-hls-apple
                     :id="camera.id"
                     :stream_url="camera.hls"
+                    :fit="(gridMode == 1 && isLandscape) ? 'contain' : 'cover'"
                     poster="video/poster.jpg"
                   ></video-hls-apple>
                 </div>
@@ -237,6 +238,7 @@
                   <video-hls-android
                     :id="camera.id"
                     :stream_url="camera.hls"
+                    :fit="(gridMode == 1 && isLandscape) ? 'contain' : 'cover'"
                     poster="video/poster.jpg"
                   ></video-hls-android>
                 </div>

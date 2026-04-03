@@ -1,5 +1,5 @@
 Vue.component('video-hls-android', {
-  props: ['id', 'stream_url', 'poster'],
+  props: ['id', 'stream_url', 'poster', 'fit'],
   data: function () {
     return {
       zoomLevel: 1,
@@ -13,6 +13,11 @@ Vue.component('video-hls-android', {
       touchStartY: 0,
       initialPinchDistance: 0,
       isDragging: false
+    }
+  },
+  computed: {
+    videoObjectFit: function () {
+      return this.$props.fit || 'cover'
     }
   },
   mounted: function () {
@@ -129,10 +134,11 @@ Vue.component('video-hls-android', {
                     autoplay
                     playsinline
                     muted
-                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block;"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: block;"
                     :style="{ 
                         transform: 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + zoomLevel + ')', 
-                        transition: isDragging ? 'none' : 'transform 0.1s ease'
+                        transition: isDragging ? 'none' : 'transform 0.1s ease',
+                        objectFit: videoObjectFit
                     }"
                 ></video>
 

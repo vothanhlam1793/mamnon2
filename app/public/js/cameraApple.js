@@ -1,5 +1,5 @@
 Vue.component('video-hls-apple', {
-  props: ['id', 'stream_url', 'poster'],
+  props: ['id', 'stream_url', 'poster', 'fit'],
   data: function () {
     return {
       zoomLevel: 1,
@@ -11,6 +11,11 @@ Vue.component('video-hls-apple', {
       touchStartY: 0,
       initialPinchDistance: 0,
       isDragging: false
+    }
+  },
+  computed: {
+    videoObjectFit: function () {
+      return this.$props.fit || 'cover'
     }
   },
   created: function () {
@@ -117,7 +122,9 @@ Vue.component('video-hls-apple', {
         this.$props.id +
         '" src="' +
         poster +
-        '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:8px; display:block; pointer-events:none;"></div>'
+        '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:' +
+        this.videoObjectFit +
+        '; border-radius:8px; display:block; pointer-events:none;"></div>'
       $('#' + this.$props.id).replaceWith(posterimg)
       this.hlsplayer(data)
     },
@@ -167,7 +174,9 @@ Vue.component('video-hls-apple', {
         poster +
         '" src="' +
         hlsurl +
-        '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:8px; pointer-events:none; display:block;"></video>'
+        '" style="position:absolute; inset:0; width:100%; height:100%; object-fit:' +
+        this.videoObjectFit +
+        '; border-radius:8px; pointer-events:none; display:block;"></video>'
       $('#' + this.$props.id).replaceWith(vidplayer)
       try {
         var video = document.getElementById('mo' + this.$props.id)
