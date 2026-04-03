@@ -78,14 +78,20 @@ var app = new Vue({
       console.log(this.school)
     },
     handleResize() {
-      this.isLandscape = window.innerWidth > window.innerHeight
+      var that = this
+      setTimeout(function () {
+        that.isLandscape = window.innerWidth > window.innerHeight
+        that.$forceUpdate()
+      }, 150)
     }
   },
   created: function () {
     this.getListCameras()
     window.addEventListener('resize', this.handleResize)
+    window.addEventListener('orientationchange', this.handleResize)
   },
   destroyed: function () {
     window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('orientationchange', this.handleResize)
   }
 })

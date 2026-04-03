@@ -18,6 +18,11 @@ Vue.component('video-hls-apple', {
       return this.$props.fit || 'cover'
     }
   },
+  watch: {
+    fit: function () {
+      this.applyObjectFit()
+    }
+  },
   created: function () {
     this.newplayer({
       stream_url: this.$props.stream_url,
@@ -25,6 +30,12 @@ Vue.component('video-hls-apple', {
     })
   },
   methods: {
+    applyObjectFit: function () {
+      var el = document.getElementById('mo' + this.$props.id)
+      if (el) {
+        el.style.objectFit = this.videoObjectFit
+      }
+    },
     handleTouchStart: function (e) {
       if (e.touches.length === 1) {
         this.isDragging = true
@@ -126,6 +137,7 @@ Vue.component('video-hls-apple', {
         this.videoObjectFit +
         '; border-radius:8px; display:block; pointer-events:none;"></div>'
       $('#' + this.$props.id).replaceWith(posterimg)
+      this.applyObjectFit()
       this.hlsplayer(data)
     },
     hlsplayer(data) {
@@ -185,6 +197,7 @@ Vue.component('video-hls-apple', {
           video.setAttribute('muted', 'muted')
           video.setAttribute('playsinline', '')
           video.setAttribute('webkit-playsinline', '')
+          this.applyObjectFit()
           video.play().catch(function () {})
         }
       } catch (e) {}
