@@ -132,7 +132,11 @@ Vue.component('video-hls-android', {
                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none;"
                     :style="{ 
                         transform: 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + zoomLevel + ')', 
-                        transition: isDragging ? 'none' : 'transform 0.1s ease'
+                        transition: isDragging ? 'none' : 'transform 0.1s ease',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-28.125%', /* Half of 16:9 aspect ratio height (56.25 / 2) */
+                        position: 'absolute'
                     }"
                 ></video>
 
