@@ -244,7 +244,7 @@ Vue.component('video-hls-apple', {
             </div>
             
             <!-- Zoom Indicator -->
-            <div v-if="zoomLevel > 1" style="position: absolute; top: 12px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;">
+            <div v-if="zoomLevel > 1" style="position: absolute; top: 45px; left: 12px; background: rgba(255,107,107,0.85); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; pointer-events: none; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10;">
                 Zoom: {{ zoomLevel.toFixed(1) }}x
             </div>
         </div>

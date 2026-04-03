@@ -49,17 +49,19 @@
       }
       .camera-name {
         position: absolute;
-        top: 10px;
-        left: 10px;
-        background: rgba(0,0,0,0.5);
+        top: 8px;
+        left: 8px;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px); /* Modern frosted glass effect */
         color: #fff;
-        padding: 4px 12px;
-        border-radius: 6px;
-        font-size: 14px;
+        padding: 3px 10px;
+        border-radius: 8px;
+        font-size: 13px;
         font-weight: 700;
         z-index: 15;
         pointer-events: none;
         margin-bottom: 0;
+        border: 1px solid rgba(255,255,255,0.2);
       }
       .alert-maintenance {
         background: #fff5f5;
@@ -96,12 +98,12 @@
       }
       .grid-1 .camera-card {
         background: #000;
-        border: 1px solid #ff6b6b; /* Accent color for the active/single camera */
-        border-radius: 12px;
+        border: 2px solid #ffb3b3; /* Softer pastel border */
+        border-radius: 15px;
         overflow: hidden;
         aspect-ratio: 16/9;
         position: relative;
-        box-shadow: 0 10px 25px rgba(255,107,107,0.15);
+        box-shadow: 0 8px 20px rgba(255, 107, 107, 0.1);
       }
       .grid-4 .camera-name, .grid-9 .camera-name {
         font-size: 10px;
