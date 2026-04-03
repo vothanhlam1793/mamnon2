@@ -1,74 +1,149 @@
 <html>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="images/student.png" type = "image/x-icon">
-        <link rel="stylesheet" href="/cdn/bootstrap.min.css">
-        <script src="/cdn/jquery.min.js"></script>
-        <script src="/cdn/popper.min.js"></script>
-        <script src="/cdn/bootstrap.min.js"></script>
-        <script src="/cdn/jquery_2.min.js"></script>
-        <script src="/cdn/vue.js"></script>
-        <script src="js/graphql.js"></script>
-        <script src="/cdn/vuex.js"></script>
+        <%- include("../header.ejs", {"title": "Quản trị - Tài khoản"}) %>
+        <style>
+            .mn-page-title {
+                font-weight: 900;
+                color: #ff6b6b;
+                margin: 18px 0 8px;
+                text-align: center;
+            }
+            .mn-panel {
+                background: #fff;
+                border: 1px solid #f0f0f0;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+                padding: 16px 14px;
+            }
+            .mn-chip {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: #fff3f3;
+                border: 1px solid #ffd6d6;
+                color: #ff6b6b;
+                border-radius: 999px;
+                padding: 6px 10px;
+                font-weight: 800;
+                margin: 4px 6px 0 0;
+                cursor: pointer;
+                user-select: none;
+            }
+            .mn-actions .btn {
+                border-radius: 12px;
+                font-weight: 800;
+            }
+            .mn-table th {
+                background: #fff9f9;
+                border-color: #ffe5e5;
+            }
+            .mn-table td, .mn-table th {
+                vertical-align: middle;
+            }
+        </style>
     </head>
     <body>
-        <div class="container-fluid" id="app">
+        <div class="container-fluid mn-container" id="app">
             <%- include("menu.ejs"); %>
-            <div class="row">
-                <div class="col text-center">
-                    <h1>Danh sách tài khoản</h1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="form-group">
-                        <label for="usr">Tìm tài khoản</label>
-                        <input type="text" class="form-control" id="usr">
+            <h2 class="mn-page-title">Quản trị tài khoản phụ huynh</h2>
+
+            <div class="mn-panel">
+                <div class="row">
+                    <div class="col-12 col-lg-4">
+                        <div class="form-group mb-2">
+                            <label for="searchTerm" style="font-weight:800;">Tìm kiếm</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="searchTerm"
+                                v-model.trim="searchTerm"
+                                placeholder="Nhập SĐT, tên bé hoặc tên lớp…"
+                                style="border-radius: 14px;"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4">
+                        <div class="form-group mb-2">
+                            <label for="classFilter" style="font-weight:800;">Lọc theo lớp</label>
+                            <select
+                                id="classFilter"
+                                class="form-control"
+                                v-model="selectedLophocId"
+                                style="border-radius: 14px;"
+                            >
+                                <option value="">Tất cả lớp</option>
+                                <option v-for="l in lophocs" :key="l.id" :value="l.id">{{ l.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-4 mn-actions d-flex align-items-end">
+                        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#myModal">
+                            Tạo tài khoản
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                        Tạo tài khoản
-                    </button>
+
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="byPhone" value="phone" v-model="searchField">
+                            <label class="form-check-label" for="byPhone" style="font-weight:800;">Số điện thoại</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="byName" value="name" v-model="searchField">
+                            <label class="form-check-label" for="byName" style="font-weight:800;">Tên bé</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="byClass" value="class" v-model="searchField">
+                            <label class="form-check-label" for="byClass" style="font-weight:800;">Tên lớp</label>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col text-center">
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                          <input type="radio" class="form-check-input" name="optradio">Tên học sinh
-                        </label>
-                      </div>
-                      <div class="form-check-inline">
-                        <label class="form-check-label">
-                          <input type="radio" class="form-check-input" name="optradio">Số điện thoại
-                        </label>
-                      </div>
-                </div>
-            </div>
-            <div class="row my-3">
-                <div class="col">
-                    <table class="table table-bordered" v-if="users.length > 0">
-                        <tr>
-                            <th>Số điện thoại</th>
-                            <th>Tên học sinh</th>
-                            <th>Lớp học</th>
-                            <th>Hành động</th>
-                        </tr>
-                        <tr v-for="user in users">
-                            <td>{{user.phone}}</td>
-                            <td>{{user.name}}</td>
-                            <td>
-                                <div>
-                                    <span class="badge badge-danger mx-1" v-for="lophoc in user.lophoc"> {{lophoc.name}} </span>
-                                </div>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </table>
+
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div style="font-weight:800;color:#444;">Kết quả: {{ filteredUsers.length }}</div>
+                            <button class="btn btn-outline-secondary" style="border-radius: 12px; font-weight:800;" @click="refresh">
+                                Làm mới
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered mn-table" v-if="filteredUsers.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 180px;">Số điện thoại</th>
+                                        <th>Tên bé</th>
+                                        <th>Lớp học</th>
+                                        <th style="width: 240px;">Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="user in filteredUsers" :key="user.id">
+                                        <td>{{ user.phone }}</td>
+                                        <td>{{ user.name }}</td>
+                                        <td>
+                                            <div>
+                                                <span class="badge badge-danger mx-1" v-for="lh in user.lophoc" :key="lh.id">{{ lh.name }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="mn-actions">
+                                            <div class="d-flex flex-wrap" style="gap: 8px;">
+                                                <button class="btn btn-warning btn-sm" @click="resetPassword(user)">Reset mật khẩu</button>
+                                                <button class="btn btn-danger btn-sm" @click="deleteUser(user)">Xoá</button>
+                                            </div>
+                                            <div style="font-size: 12px; color:#777; margin-top: 6px;">
+                                                state: <strong>{{ user.state || 'NORMAL' }}</strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div v-else class="alert alert-info" style="border-radius: 16px;">
+                                Không có kết quả phù hợp.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         <!-- The Modal -->

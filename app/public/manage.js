@@ -20,13 +20,13 @@ Vue.component("create-user", {
                 </div>
                 <div class="col">
                     <div v-if="user.lophoc">
-                        <span v-for="lophoc in user.lophoc" @click="removeLophoc(lophoc)">{{lophoc.name}}</span>
+                        <span class="mn-chip" v-for="lophoc in user.lophoc" @click="removeLophoc(lophoc)">{{lophoc.name}}</span>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col text-center">
-                    <button class="btn btn-primary" @click="addUser()">Thêm tài khoản</button>
+                    <button class="btn btn-primary" style="border-radius: 14px; font-weight: 800;" @click="addUser()">Thêm tài khoản</button>
                 </div>
             </div>
         </div>
@@ -55,6 +55,15 @@ Vue.component("create-user", {
             })
         },
         addUser(){
+            var that = this;
+            if (!this.user.name || !this.user.phone) {
+                alert("Vui lòng nhập tên và số điện thoại");
+                return;
+            }
+            if (!this.user.lophoc || this.user.lophoc.length === 0) {
+                alert("Vui lòng chọn ít nhất 1 lớp");
+                return;
+            }
             var ql = [];
             this.user.lophoc.forEach(function(item){
                 ql.push(`{id:"${item.id}"}`);
@@ -79,9 +88,17 @@ Vue.component("create-user", {
             }
             `
             graphql(QL_CREATE_USER).then(function(data){
-                console.log(data);
+                if (data && data.data && data.data.createUser && data.data.createUser.id) {
+                    alert("Tạo tài khoản thành công");
+                    that.user = {};
+                    that.lophoc = {};
+                    that.$store.dispatch('fetchUsers');
+                } else {
+                    alert("Không tạo được tài khoản, vui lòng kiểm tra lại")
+                }
             }).catch(function(err){
                 console.log(err);
+                alert("Có lỗi khi tạo tài khoản")
             })
         }
     },
@@ -97,7 +114,10 @@ const store = new Vuex.Store({
         count: 0,
         users: [],
         lophocs: [],
-        usersFilter: []
+        usersFilter: [],
+        searchTerm: "",
+        searchField: "phone",
+        selectedLophocId: ""
     },
     mutations: {
         increase(state){
@@ -109,6 +129,15 @@ const store = new Vuex.Store({
         },
         fetchLophocs(state, payload){
             state.lophocs = payload;
+        },
+        setSearchTerm(state, payload){
+            state.searchTerm = payload;
+        },
+        setSearchField(state, payload){
+            state.searchField = payload;
+        },
+        setSelectedLophocId(state, payload){
+            state.selectedLophocId = payload;
         }
     },
     actions: {
@@ -168,6 +197,83 @@ var app = new Vue({
         },
         lophocs(){
             return this.$store.state.lophocs;
+        },
+        searchTerm: {
+            get(){
+                return this.$store.state.searchTerm;
+            },
+            set(v){
+                this.$store.commit('setSearchTerm', v);
+            }
+        },
+        searchField: {
+            get(){
+                return this.$store.state.searchField;
+            },
+            set(v){
+                this.$store.commit('setSearchField', v);
+            }
+        },
+        selectedLophocId: {
+            get(){
+                return this.$store.state.selectedLophocId;
+            },
+            set(v){
+                this.$store.commit('setSelectedLophocId', v);
+            }
+        },
+        filteredUsers(){
+            var term = (this.searchTerm || "").toLowerCase().trim();
+            var field = this.searchField;
+            var classId = this.selectedLophocId;
+            return (this.users || []).filter(function(u){
+                if (classId) {
+                    var okClass = (u.lophoc || []).some(function(lh){ return lh.id === classId; });
+                    if (!okClass) return false;
+                }
+                if (!term) return true;
+                var phone = (u.phone || "").toLowerCase();
+                var name = (u.name || "").toLowerCase();
+                var classNames = (u.lophoc || []).map(function(lh){ return (lh.name || "").toLowerCase(); }).join(" ");
+                if (field === "phone") return phone.includes(term);
+                if (field === "name") return name.includes(term);
+                if (field === "class") return classNames.includes(term);
+                return phone.includes(term) || name.includes(term) || classNames.includes(term);
+            });
+        }
+    },
+    methods: {
+        refresh(){
+            this.$store.dispatch('fetchUsers');
+            this.$store.dispatch('fetchLophocs');
+        },
+        resetPassword(user){
+            if(!user || !user.id) return;
+            if(!confirm("Reset mật khẩu về số điện thoại và yêu cầu đổi mật khẩu khi đăng nhập?")) return;
+            graphql(`
+                mutation ($id: ID!, $pwd: String!) {
+                    updateUser(id: $id, data: { password: $pwd, state: "RESET" }) { id }
+                }
+            `, { id: user.id, pwd: user.phone }).then(() => {
+                alert("Đã reset mật khẩu");
+                this.$store.dispatch('fetchUsers');
+            }).catch((e) => {
+                console.log(e);
+                alert("Không reset được");
+            });
+        },
+        deleteUser(user){
+            if(!user || !user.id) return;
+            if(!confirm("Xoá tài khoản này?")) return;
+            graphql(`
+                mutation ($id: ID!) { deleteUser(id: $id) { id } }
+            `, { id: user.id }).then(() => {
+                alert("Đã xoá");
+                this.$store.dispatch('fetchUsers');
+            }).catch((e) => {
+                console.log(e);
+                alert("Không xoá được");
+            });
         }
     },
     mounted(){

@@ -9,6 +9,25 @@ function redirectLogin(req, res, next) {
 
 module.exports = keystone => {
   var router = express.Router()
+  async function requireAdmin(req, res, next) {
+    if (!req.session.keystoneItemId) {
+      return res.redirect('/login')
+    }
+    try {
+      const result = await keystone.executeGraphQL({
+        context: keystone.createContext({ skipAccessControl: true }),
+        query: `query ($id: ID!) { User(where: { id: $id }) { id isAdmin } }`,
+        variables: { id: req.session.keystoneItemId }
+      })
+      const user = result && result.data && result.data.User
+      if (user && user.isAdmin === true) {
+        return next()
+      }
+      return res.status(403).send('Forbidden')
+    } catch (e) {
+      return res.status(500).send('Server error')
+    }
+  }
   router.get('/', redirectLogin, (req, res) => {
     // console.log(keystone);
     res.render('homepage')
@@ -128,10 +147,10 @@ module.exports = keystone => {
     })
     res.send(c)
   })
-  router.get('/manage', function (req, res) {
+  router.get('/manage', requireAdmin, function (req, res) {
     res.render('manage/index')
   })
-  router.get('/mNotify', function (req, res) {
+  router.get('/mNotify', requireAdmin, function (req, res) {
     res.render('manage/notify')
   })
   return router
