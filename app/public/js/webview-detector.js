@@ -105,7 +105,7 @@
             if (/android/i.test(navigator.userAgent)) {
                 window.location.href = 'intent://' + currentUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;end';
             } else {
-                // For iOS, instead of alert, we show a nice hint
+                // For iOS, instead of alert, we show a nice hint with a pointing arrow
                 banner.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 12px; flex: 1;">
                         <div style="font-size: 24px;">💡</div>
@@ -115,7 +115,40 @@
                     </div>
                     <button id="close-banner-btn-2" style="background: #f5f5f5; color: #bbb; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer;">×</button>
                 `;
-                document.getElementById('close-banner-btn-2').addEventListener('click', () => banner.remove());
+                
+                // Add a floating pointer to the top right
+                const pointer = document.createElement('div');
+                pointer.id = 'webview-pointer';
+                pointer.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 15px;
+                    font-size: 40px;
+                    z-index: 1000000;
+                    animation: bounce-point 1s infinite;
+                    pointer-events: none;
+                    text-shadow: 0 0 15px rgba(255,107,107,0.5);
+                `;
+                pointer.innerHTML = '👆';
+                
+                // Add animation style
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    @keyframes bounce-point {
+                        0%, 100% { transform: translateY(0); }
+                        50% { transform: translateY(-15px); }
+                    }
+                `;
+                document.head.appendChild(style);
+                document.body.appendChild(pointer);
+
+                const closeHint = () => {
+                    banner.remove();
+                    pointer.remove();
+                };
+
+                document.getElementById('close-banner-btn-2').addEventListener('click', closeHint);
+                setTimeout(closeHint, 10000); // Auto close after 10s
             }
         });
 
