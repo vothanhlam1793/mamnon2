@@ -5,6 +5,7 @@ var app = new Vue({
     school: {},
     lophoc: {},
     cameras: [],
+    gridMode: 1, // 1, 4, 9
     isLoading: true,
     lydo: 'thu nghiem',
     device:
