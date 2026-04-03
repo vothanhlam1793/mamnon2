@@ -188,6 +188,13 @@ const store = new Vuex.Store({
 var app = new Vue({
     el: "#app",
     store,
+    data: function () {
+        return {
+            editUser: null,
+            editUserName: "",
+            editLophocIds: []
+        }
+    },
     computed: {
         count(){
             return this.$store.state.count;
@@ -246,6 +253,63 @@ var app = new Vue({
         refresh(){
             this.$store.dispatch('fetchUsers');
             this.$store.dispatch('fetchLophocs');
+        },
+        openEdit(user){
+            if(!user || !user.id) return;
+            this.editUser = user;
+            this.editUserName = user.name || "";
+            this.editLophocIds = (user.lophoc || []).map(function(lh){ return lh.id; });
+            if (window.$ && $('#editUserModal').length) {
+                $('#editUserModal').modal('show');
+            }
+        },
+        isEditLophocSelected(lophocId){
+            return this.editLophocIds.indexOf(lophocId) >= 0;
+        },
+        toggleEditLophoc(lh){
+            if(!lh || !lh.id) return;
+            var idx = this.editLophocIds.indexOf(lh.id);
+            if (idx >= 0) {
+                this.editLophocIds.splice(idx, 1);
+            } else {
+                this.editLophocIds.push(lh.id);
+            }
+        },
+        saveEdit(){
+            if(!this.editUser || !this.editUser.id) return;
+            var name = (this.editUserName || "").trim();
+            var currentIds = (this.editUser.lophoc || []).map(function(lh){ return lh.id; });
+            var nextIds = (this.editLophocIds || []).slice();
+
+            if (!name) {
+                alert("Vui lòng nhập tên bé");
+                return;
+            }
+            if (nextIds.length === 0) {
+                alert("Vui lòng chọn ít nhất 1 lớp");
+                return;
+            }
+
+            var connect = nextIds.filter(function(id){ return currentIds.indexOf(id) < 0; }).map(function(id){ return { id: id }; });
+            var disconnect = currentIds.filter(function(id){ return nextIds.indexOf(id) < 0; }).map(function(id){ return { id: id }; });
+
+            graphql(`
+                mutation ($id: ID!, $name: String, $connect: [LopHocWhereUniqueInput!], $disconnect: [LopHocWhereUniqueInput!]) {
+                    updateUser(id: $id, data: { name: $name, lophoc: { connect: $connect, disconnect: $disconnect } }) { id }
+                }
+            `, { id: this.editUser.id, name: name, connect: connect, disconnect: disconnect }).then(() => {
+                if (window.$ && $('#editUserModal').length) {
+                    $('#editUserModal').modal('hide');
+                }
+                this.editUser = null;
+                this.editUserName = "";
+                this.editLophocIds = [];
+                this.$store.dispatch('fetchUsers');
+                alert("Đã cập nhật");
+            }).catch((e) => {
+                console.log(e);
+                alert("Không cập nhật được");
+            });
         },
         resetPassword(user){
             if(!user || !user.id) return;
