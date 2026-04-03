@@ -144,11 +144,11 @@ Vue.component('video-hls-android', {
                      @touchend.stop.prevent="handleTouchEnd">
                 </div>
                 
-                <!-- Zoom Controls Overlay -->
-                <div class="zoom-controls" style="position: absolute; bottom: 15px; right: 10px; display: flex; flex-direction: column; gap: 8px; z-index: 10;">
-                    <button @click.stop="zoomIn" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee; font-size: 18px;">+</button>
-                    <button @click.stop="zoomOut" class="btn btn-sm btn-light shadow-sm" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; opacity: 0.9; font-weight: bold; border: 1px solid #eee; font-size: 18px;">-</button>
-                    <button @click.stop="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 12px; height: 32px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b;">1:1</button>
+                <!-- Zoom Controls Overlay: Only Reset Button -->
+                <div class="zoom-controls" style="position: absolute; bottom: 10px; right: 10px; z-index: 10;">
+                    <button v-if="zoomLevel > 1" @click.stop="resetZoom" class="btn btn-sm btn-light shadow-sm" style="border-radius: 10px; height: 30px; padding: 0 10px; opacity: 0.9; font-size: 11px; font-weight: 800; border: 1px solid #eee; color: #ff6b6b; display: flex; align-items: center; justify-content: center;">
+                        <span style="margin-right: 4px;">🔄</span> 1:1
+                    </button>
                 </div>
                 
                 <!-- Zoom Indicator -->
