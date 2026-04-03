@@ -48,11 +48,18 @@
         box-shadow: 0 8px 25px rgba(0,0,0,0.1);
       }
       .camera-name {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0,0,0,0.5);
+        color: #fff;
+        padding: 4px 12px;
+        border-radius: 6px;
+        font-size: 14px;
         font-weight: 700;
-        color: #333;
-        margin-bottom: 12px;
-        display: block;
-        font-size: 16px;
+        z-index: 15;
+        pointer-events: none;
+        margin-bottom: 0;
       }
       .alert-maintenance {
         background: #fff5f5;
@@ -81,36 +88,26 @@
         padding: 0;
         border-radius: 4px;
         margin-bottom: 0;
-        background: #222;
+        background: #000;
         border: 1px solid #444;
         aspect-ratio: 16/9;
         overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: relative;
       }
       .grid-1 .camera-card {
-        background: #f0f0f0;
+        background: #000;
         border: 1px solid #ddd;
         border-radius: 12px;
         overflow: hidden;
         aspect-ratio: 16/9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: relative;
       }
       .grid-4 .camera-name, .grid-9 .camera-name {
-        position: absolute;
+        font-size: 10px;
+        padding: 2px 8px;
         top: 5px;
         left: 5px;
-        background: rgba(0,0,0,0.5);
-        color: #fff;
-        padding: 2px 6px;
         border-radius: 4px;
-        font-size: 10px;
-        margin-bottom: 0;
-        z-index: 10;
-        pointer-events: none;
       }
       .grid-mode-selector {
         background: white;
