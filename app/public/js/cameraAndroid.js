@@ -129,7 +129,7 @@ Vue.component('video-hls-android', {
                     autoplay
                     playsinline
                     muted
-                    style="width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block;"
+                    style="width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block;"
                     :style="{ 
                         transform: 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + zoomLevel + ')', 
                         transition: isDragging ? 'none' : 'transform 0.1s ease'

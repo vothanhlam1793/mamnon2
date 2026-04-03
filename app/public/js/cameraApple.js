@@ -165,7 +165,7 @@ Vue.component('video-hls-apple', {
         loop +
         ' poster="' +
         poster +
-        '" style="width:100%; height:100%; object-fit:contain; border-radius:8px; pointer-events:none; display:block;" data-setup=\'{ }\'>  <source src="' +
+        '" style="width:100%; height:100%; object-fit:cover; border-radius:8px; pointer-events:none; display:block;" data-setup=\'{ }\'>  <source src="' +
         hlsurl +
         "\" type='video/mp4' /></video>"
       $('#' + this.$props.id).replaceWith(vidplayer)
