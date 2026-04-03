@@ -5,6 +5,7 @@ var app = new Vue({
     school: {},
     lophoc: {},
     cameras: [],
+    isLoading: true,
     lydo: 'thu nghiem',
     device:
       navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i)
@@ -62,6 +63,7 @@ var app = new Vue({
             })
           })
           that.cameras = cms
+          that.isLoading = false
           // console.log("CAMERAS: ", that);
           that.checkRedirect()
           that.$forceUpdate()

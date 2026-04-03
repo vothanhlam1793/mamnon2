@@ -1,0 +1,21 @@
+{
+  "name": "Mầm Non Camera",
+  "short_name": "Mầm Non",
+  "description": "Ứng dụng xem camera trường mầm non",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff6b6b",
+  "icons": [
+    {
+      "src": "images/student.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/student.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -2,9 +2,69 @@
   <head>
     <%- include( "header.ejs", {title: "Camera Mầm Non"}); %>
     <style>
+      /* Skeleton Loading Effect */
+      .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+      @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      .skeleton-video {
+        width: 100%;
+        height: 200px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+      }
+      .skeleton-text {
+        width: 60%;
+        height: 15px;
+        border-radius: 4px;
+        margin: 0 auto;
+      }
+
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Nunito', sans-serif;
+      }
       video {
         width: 100%;
         height: auto;
+        border-radius: 12px;
+      }
+      .camera-card {
+        background: white;
+        border-radius: 20px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+        border: 1px solid #eee;
+        transition: transform 0.3s;
+      }
+      .camera-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      }
+      .camera-name {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 12px;
+        display: block;
+        font-size: 16px;
+      }
+      .alert-maintenance {
+        background: #fff5f5;
+        border: 1px dashed #ff6b6b;
+        border-radius: 20px;
+        padding: 20px;
+        color: #ff6b6b;
+      }
+      .maintenance-title {
+        font-weight: 800;
+        font-size: 18px;
+        margin-bottom: 10px;
       }
     </style>
     <script src="static/js/video.js"></script>
@@ -20,22 +80,35 @@
   <body>
     <%- include( "menu.ejs"); %>
     <div class="container-fluid" id="app_home">
-      <div class="mt-2 jumbotron" v-if="school.stateMode">
+      <!-- Loading Skeletons -->
+      <div v-if="isLoading" class="mt-4">
+        <h4 class="mb-4 skeleton" style="width: 200px; height: 25px; border-radius: 8px;"></h4>
+        <div class="row">
+          <div v-for="i in 3" class="col-md-6 col-sm-12 col-lg-4">
+            <div class="camera-card text-center">
+              <div class="skeleton-video skeleton"></div>
+              <div class="skeleton-text skeleton"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-2 jumbotron" v-if="!isLoading && school.stateMode">
         <%- include('errorComponent.ejs'); %>
       </div>
-      <div class="mt-2" v-else>
+      <div class="mt-4" v-if="!isLoading">
         <div v-if="cameras.length > 0">
-          <p>Danh sách camera của bạn</p>
+          <h4 class="mb-4 font-weight-bold" style="color: #444;">Danh sách camera của bạn</h4>
           <div class="row">
             <div
               v-for="camera in cameras"
-              class="col-md-6 col-sm-12 col-log-6 col-xl-4"
+              class="col-md-6 col-sm-12 col-lg-4"
             >
               <div
-                class="text-center mt-3 alert alert-secondary"
+                class="camera-card text-center"
                 v-if="camera.stateMode == undefined"
               >
-                <label>{{ camera.name }}</label>
+                <label class="camera-name">{{ camera.name }}</label>
                 <div v-if="device" class="">
                   <video-hls-apple
                     :id="camera.id"
@@ -51,19 +124,15 @@
                   ></video-hls-android>
                 </div>
               </div>
-              <div class="text-center mt-3 alert alert-danger" v-else>
-                <h3>{{ camera.stateMode.name }}</h3>
-                <p>{{ camera.stateMode.description }}</p>
-                <p>
-                  Dự kiến hòan thành: Vào lúc
-                  {{ getHourFromISOWithOffset(camera.stateMode.estimate) }} -
-                  ngày
-                  <strong>{{
-                    convertISOToNormalDate(camera.stateMode.estimate)
-                  }}</strong>
+              <div class="alert-maintenance text-center" v-else>
+                <div class="maintenance-title">🚧 {{ camera.stateMode.name }}</div>
+                <p style="font-size: 14px; opacity: 0.8;">{{ camera.stateMode.description }}</p>
+                <p style="font-size: 13px;">
+                  Dự kiến hòan thành: 
+                  <strong>{{ getHourFromISOWithOffset(camera.stateMode.estimate) }}</strong> - 
+                  <strong>{{ convertISOToNormalDate(camera.stateMode.estimate) }}</strong>
                 </p>
-                <p v-if="camera.stateMode.note">{{ camera.stateMode.note }}</p>
-                <p v-else></p>
+                <p v-if="camera.stateMode.note" style="font-style: italic; font-size: 12px;">{{ camera.stateMode.note }}</p>
               </div>
             </div>
           </div>

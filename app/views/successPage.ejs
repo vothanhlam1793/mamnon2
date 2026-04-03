@@ -1,19 +1,16 @@
-<div class="row">
-    <div class="col-3">
-
+<div class="text-center">
+    <div class="login-header">
+        <h1>THÀNH CÔNG! ✨</h1>
+        <p>Bạn đã đăng nhập thành công vào hệ thống.</p>
     </div>
-    <div class="col-6">
-        <div class="text-center">
-            <h1>Đã đăng nhập</h1>
-        </div>
-        <div class="text-center mt-5">
-            <button class="btn btn-danger" @click="logout">Đăng xuất</button>
-        </div>
-        <div class="text-center mt-5">
-            <button class="btn btn-success" onclick="location.href='/'">Trở lại trang chủ</button>
-        </div>
-    </div>
-    <div class="col-3">
+</div>
 
+<div class="mt-4 text-center">
+    <button class="btn-login" onclick="location.href='/'">
+        Đến trang xem Camera
+    </button>
+    
+    <div class="login-footer mt-4">
+        <a href="#" @click="logout" style="color: #999;">Đăng xuất tài khoản</a>
     </div>
 </div>

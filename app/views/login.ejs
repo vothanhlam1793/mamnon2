@@ -1,18 +1,109 @@
 <html>
     <head>
         <%- include("header.ejs", {"title": "Đăng nhập"}) %>
+        <style>
+            body {
+                background-color: #fff9f9;
+                font-family: 'Nunito', sans-serif;
+            }
+            #app_login {
+                min-height: 80vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .login-card {
+                background: white;
+                border-radius: 30px;
+                padding: 40px 30px;
+                box-shadow: 0 15px 35px rgba(255, 107, 107, 0.1);
+                border: 2px solid #fff1f1;
+                max-width: 450px;
+                width: 100%;
+            }
+            .login-header h1 {
+                color: #ff6b6b;
+                font-weight: 800;
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+            .login-header p {
+                color: #888;
+                font-size: 14px;
+            }
+            .form-group label {
+                font-weight: 700;
+                color: #555;
+                margin-left: 5px;
+            }
+            .form-control {
+                border-radius: 15px;
+                padding: 12px 20px;
+                border: 2px solid #eee;
+                transition: all 0.3s;
+                height: auto;
+            }
+            .form-control:focus {
+                border-color: #ff6b6b;
+                box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.1);
+            }
+            .btn-login {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+                border: none;
+                border-radius: 15px;
+                padding: 12px;
+                font-weight: 700;
+                font-size: 16px;
+                color: white;
+                width: 100%;
+                margin-top: 20px;
+                box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+                transition: all 0.3s;
+            }
+            .btn-login:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+                color: white;
+            }
+            .login-footer {
+                margin-top: 25px;
+                text-align: center;
+            }
+            .login-footer a {
+                color: #ff6b6b;
+                font-weight: 600;
+                text-decoration: none;
+            }
+            .login-logo {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+                border-radius: 20px;
+                background: #fff1f1;
+                padding: 10px;
+            }
+            .status-msg {
+                border-radius: 15px;
+                padding: 10px 15px;
+                margin-bottom: 20px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+        </style>
     </head>
     <body>
-        <%- include("menu.ejs"); %>
         <div class="container-fluid" id="app_login">
-            <div v-if="page == 'login'">
-                <%- include("loginPage.ejs"); %>
-            </div>
-            <div v-if="page == 'change_password'">
-                <%- include("changePassword.ejs"); %>
-            </div>
-            <div v-if="page == 'success'">
-                <%- include("successPage.ejs"); %>
+            <div class="login-card">
+                <div v-if="page == 'login'">
+                    <%- include("loginPage.ejs"); %>
+                </div>
+                <div v-if="page == 'change_password'">
+                    <%- include("changePassword.ejs"); %>
+                </div>
+                <div v-if="page == 'success'">
+                    <%- include("successPage.ejs"); %>
+                </div>
             </div>
         </div>
         <script src="js/webview-detector.js"></script>

@@ -1,20 +1,37 @@
 Vue.component('video-hls-android', {
   props: ['id', 'stream_url', 'poster'],
   data: function () {
-    return {}
+    return {
+      zoomLevel: 1,
+      maxZoom: 3,
+      minZoom: 1
+    }
   },
   mounted: function () {
     this.video_hls(this.$props.id, this.$props.stream_url)
   },
   methods: {
+    zoomIn: function () {
+      if (this.zoomLevel < this.maxZoom) {
+        this.zoomLevel = parseFloat((this.zoomLevel + 0.5).toFixed(1))
+      }
+    },
+    zoomOut: function () {
+      if (this.zoomLevel > this.minZoom) {
+        this.zoomLevel = parseFloat((this.zoomLevel - 0.5).toFixed(1))
+      }
+    },
+    resetZoom: function () {
+      this.zoomLevel = 1
+    },
     video_hls(id_video, url_video) {
       console.log('Video hls running', id_video, url_video)
       var video = document.getElementById(id_video)
       if (Hls.isSupported()) {
         var hls = new Hls({
-          maxBufferLength: 30, // Maximum buffer length in seconds
-          maxBufferSize: 60 * 1000 * 1000, // Maximum buffer size in bytes (60MB)
-          maxBufferHole: 0.5 // Maximum buffer hole in seconds
+          maxBufferLength: 30,
+          maxBufferSize: 60 * 1000 * 1000,
+          maxBufferHole: 0.5
         })
         hls.loadSource(url_video)
         hls.attachMedia(video)
@@ -27,21 +44,39 @@ Vue.component('video-hls-android', {
           video.play()
         })
       } else {
-        app.lydo = 'KHONG HO TRO'
-        alert(
-          'Trình duyệt không hỗ trợ - Bạn nên sử dụng Chrome để hệ thống hoạt động tốt hơn'
-        )
-        console.log('Notthing')
+        alert('Trình duyệt không hỗ trợ - Bạn nên sử dụng Chrome để hệ thống hoạt động tốt hơn')
       }
     }
   },
   template: `
-        <div>
-            <video :id='id'
-            controls
-            loop
-            autoplay
-            ></video>
+        <div class="video-container-wrapper">
+            <div class="video-overflow-hidden" style="overflow: hidden; border-radius: 12px; position: relative; background: #000;">
+                <video :id='id'
+                    controls
+                    loop
+                    autoplay
+                    playsinline
+                    :style="{ 
+                        transform: 'scale(' + zoomLevel + ')', 
+                        transition: 'transform 0.3s ease',
+                        width: '100%',
+                        height: 'auto',
+                        display: 'block'
+                    }"
+                ></video>
+                
+                <!-- Zoom Controls Overlay -->
+                <div class="zoom-controls" style="position: absolute; bottom: 50px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;">
+                    <button @click="zoomIn" class="btn btn-sm btn-light" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; opacity: 0.8; font-weight: bold;">+</button>
+                    <button @click="zoomOut" class="btn btn-sm btn-light" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; opacity: 0.8; font-weight: bold;">-</button>
+                    <button @click="resetZoom" class="btn btn-sm btn-light" style="border-radius: 10px; height: 32px; padding: 0 8px; opacity: 0.8; font-size: 10px; font-weight: bold;">1:1</button>
+                </div>
+                
+                <!-- Zoom Indicator -->
+                <div v-if="zoomLevel > 1" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; pointer-events: none;">
+                    Zoom: {{ zoomLevel }}x
+                </div>
+            </div>
         </div>
     `
 })

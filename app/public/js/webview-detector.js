@@ -1,4 +1,6 @@
 (function() {
+    let deferredPrompt;
+
     function isSocialAppWebview() {
         const ua = navigator.userAgent.toLowerCase();
         
@@ -32,18 +34,20 @@
         banner.id = 'webview-banner';
         banner.style.cssText = `
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-            color: white;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #fff;
+            color: #333;
             padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 999999;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Nunito', sans-serif;
+            border-radius: 20px;
+            border: 2px solid #ff6b6b;
             flex-wrap: wrap;
             gap: 10px;
         `;
@@ -66,33 +70,38 @@
 
         banner.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px;">
-                <span style="font-size: 24px;">${iconMap[appName] || '📱'}</span>
+                <span style="font-size: 28px;">${iconMap[appName] || '📱'}</span>
                 <div>
-                    <div style="font-weight: 600; font-size: 15px;">Đang mở trong ${appLabel[appName]} App</div>
-                    <div style="font-size: 13px; opacity: 0.9;">Có thể xem camera bị lỗi. Nên mở bằng trình duyệt.</div>
+                    <div style="font-weight: 700; font-size: 16px; color: #ff6b6b;">Đang mở trong ${appLabel[appName]}</div>
+                    <div style="font-size: 13px; color: #666;">Mở bằng trình duyệt để xem camera mượt hơn nhé! ✨</div>
                 </div>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <button id="open-browser-btn" style="
-                    background: white;
-                    color: #d32f2f;
+                    background: #ff6b6b;
+                    color: white;
                     border: none;
                     padding: 10px 20px;
                     border-radius: 25px;
-                    font-weight: 600;
+                    font-weight: 700;
                     cursor: pointer;
                     font-size: 14px;
                     white-space: nowrap;
-                ">🌐 Mở bằng trình duyệt</button>
+                    box-shadow: 0 4px 10px rgba(255,107,107,0.3);
+                ">🌐 Mở trình duyệt</button>
                 <button id="close-banner-btn" style="
-                    background: rgba(255,255,255,0.2);
-                    color: white;
-                    border: 1px solid white;
-                    padding: 8px 15px;
-                    border-radius: 20px;
+                    background: #f0f0f0;
+                    color: #999;
+                    border: none;
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
                     cursor: pointer;
-                    font-size: 14px;
-                ">Đóng</button>
+                    font-size: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                ">×</button>
             </div>
         `;
 
@@ -107,42 +116,135 @@
                 // Use intent to open in default browser
                 window.location.href = 'intent://' + currentUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;end';
             } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                // iOS - Copy URL to clipboard and show instruction
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(currentUrl).then(function() {
-                        alert('Đã copy URL! Mở Safari và dán vào thanh địa chỉ.');
-                    }).catch(function() {
-                        prompt('Copy URL này và mở bằng Safari:', currentUrl);
-                    });
-                } else {
-                    prompt('Copy URL này và mở bằng Safari:', currentUrl);
-                }
+                // iOS - Instruction for Safari
+                alert('Vui lòng copy link này và mở bằng trình duyệt Safari nhé! ❤️\n\n' + currentUrl);
             } else {
-                // Desktop or other - just open new tab
-                window.open(currentUrl, '_system');
+                window.open(currentUrl, '_blank');
             }
         });
 
         // Event: Close banner
         document.getElementById('close-banner-btn').addEventListener('click', function() {
             banner.remove();
-            // Save to localStorage to not show again for this session
             localStorage.setItem('webview-banner-dismissed', 'true');
         });
     }
 
+    function showInstallPrompt() {
+        if (localStorage.getItem('pwa-prompt-dismissed') === 'true') return;
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) return;
+
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const prompt = document.createElement('div');
+        prompt.id = 'pwa-install-prompt';
+        prompt.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #fff;
+            color: #333;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 999998;
+            font-family: 'Nunito', sans-serif;
+            border-radius: 20px;
+            border: 2px solid #4ecdc4;
+            flex-wrap: wrap;
+            gap: 10px;
+        `;
+
+        const content = isIOS ? `
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                <img src="images/student.png" style="width: 45px; height: 45px; border-radius: 10px;">
+                <div>
+                    <div style="font-weight: 700; font-size: 15px; color: #4ecdc4;">Thêm vào màn hình chính</div>
+                    <div style="font-size: 12px; color: #666;">Bấm <span style="font-weight: bold;">Chia sẻ 📤</span> rồi chọn <span style="font-weight: bold;">'Thêm vào MH chính'</span> để xem camera nhanh hơn nhé! 🌸</div>
+                </div>
+            </div>
+        ` : `
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                <img src="images/student.png" style="width: 45px; height: 45px; border-radius: 10px;">
+                <div>
+                    <div style="font-weight: 700; font-size: 15px; color: #4ecdc4;">Cài đặt ứng dụng Mầm Non</div>
+                    <div style="font-size: 12px; color: #666;">Cài đặt để nhận thông báo và xem camera tiện lợi hơn! 🍓</div>
+                </div>
+            </div>
+            <button id="install-pwa-btn" style="
+                background: #4ecdc4;
+                color: white;
+                border: none;
+                padding: 10px 18px;
+                border-radius: 25px;
+                font-weight: 700;
+                cursor: pointer;
+                font-size: 14px;
+                white-space: nowrap;
+                box-shadow: 0 4px 10px rgba(78,205,196,0.3);
+            ">Cài đặt ngay</button>
+        `;
+
+        prompt.innerHTML = content + `
+            <button id="close-pwa-prompt" style="
+                background: #f0f0f0;
+                color: #999;
+                border: none;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">×</button>
+        `;
+
+        document.body.appendChild(prompt);
+
+        const installBtn = document.getElementById('install-pwa-btn');
+        if (installBtn && deferredPrompt) {
+            installBtn.addEventListener('click', async () => {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    prompt.remove();
+                }
+                deferredPrompt = null;
+            });
+        }
+
+        document.getElementById('close-pwa-prompt').addEventListener('click', () => {
+            prompt.remove();
+            localStorage.setItem('pwa-prompt-dismissed', 'true');
+        });
+    }
+
+    // Event listener for PWA install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Show the custom prompt
+        showInstallPrompt();
+    });
+
     // Check on page load
     function init() {
-        // Don't show if already dismissed
-        if (localStorage.getItem('webview-banner-dismissed') === 'true') return;
-        
-        const app = isSocialAppWebview();
-        if (app) {
-            showBanner(app);
+        const socialApp = isSocialAppWebview();
+        if (socialApp) {
+            showBanner(socialApp);
+        } else {
+            // If not in social app, check for PWA install (iOS case or previously triggered Android)
+            const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isIOS) {
+                setTimeout(showInstallPrompt, 2000); // Delay for iOS to not be intrusive
+            }
         }
     }
 
-    // Run on DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

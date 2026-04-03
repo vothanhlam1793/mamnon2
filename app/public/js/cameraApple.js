@@ -1,7 +1,11 @@
 Vue.component('video-hls-apple', {
   props: ['id', 'stream_url', 'poster'],
   data: function () {
-    return {}
+    return {
+      zoomLevel: 1,
+      maxZoom: 3,
+      minZoom: 1
+    }
   },
   created: function () {
     this.newplayer({
@@ -10,6 +14,29 @@ Vue.component('video-hls-apple', {
     })
   },
   methods: {
+    zoomIn: function () {
+      if (this.zoomLevel < this.maxZoom) {
+        this.zoomLevel = parseFloat((this.zoomLevel + 0.5).toFixed(1))
+        this.applyZoom()
+      }
+    },
+    zoomOut: function () {
+      if (this.zoomLevel > this.minZoom) {
+        this.zoomLevel = parseFloat((this.zoomLevel - 0.5).toFixed(1))
+        this.applyZoom()
+      }
+    },
+    resetZoom: function () {
+      this.zoomLevel = 1
+      this.applyZoom()
+    },
+    applyZoom: function () {
+      var video = document.getElementById('mo' + this.$props.id)
+      if (video) {
+        video.style.transform = 'scale(' + this.zoomLevel + ')'
+        video.style.transition = 'transform 0.3s ease'
+      }
+    },
     newplayer(data) {
       var poster = data.poster
       var posterimg =
@@ -19,7 +46,7 @@ Vue.component('video-hls-apple', {
         this.$props.id +
         '" src="' +
         poster +
-        '"></div>'
+        '" style="width:100%; height:auto; border-radius:12px;"></div>'
       $('#' + this.$props.id).replaceWith(posterimg)
       this.hlsplayer(data)
     },
@@ -66,7 +93,7 @@ Vue.component('video-hls-apple', {
         controls +
         '  ' +
         cast +
-        'id="mo' +
+        ' id="mo' +
         this.$props.id +
         '" class="video-js vjs-default-skin" preload="none" ' +
         autoplay +
@@ -74,12 +101,13 @@ Vue.component('video-hls-apple', {
         loop +
         ' poster="' +
         poster +
-        '"    data-setup=\'{ }\'>  <source src="' +
+        '" style="width:100%; height:auto; display:block; border-radius:12px;" data-setup=\'{ }\'>  <source src="' +
         hlsurl +
         "\" type='video/mp4' /></video>"
       $('#' + this.$props.id).replaceWith(vidplayer)
       vjs.autoSetup()
       this.resizeVideo()
+      this.applyZoom() // Apply zoom after player is created
       setInterval(this.resizeVideo, 1500)
     },
     checkm3u8available_helper(hlsdata, depth) {
@@ -129,14 +157,31 @@ Vue.component('video-hls-apple', {
     },
     resizeVideo() {
       if ($('#mo' + this.$props.id).length) {
-        $('#mo' + this.$props.id).width($('#border' + this.$props.id).width())
-        $('#mo' + this.$props.id).height($('#border' + this.$props.id).height())
+        // Only resize if not zoomed to avoid breaking CSS transform scale
+        if (this.zoomLevel === 1) {
+          $('#mo' + this.$props.id).width($('#border' + this.$props.id).width())
+          $('#mo' + this.$props.id).height($('#border' + this.$props.id).height())
+        }
       }
     }
   },
   template: `
-        <div class="" :id="'border' + id">
-            <div :id="id"></div>
+        <div class="video-container-wrapper" style="position: relative;">
+            <div :id="'border' + id" style="overflow: hidden; border-radius: 12px; background: #000;">
+                <div :id="id"></div>
+            </div>
+            
+            <!-- Zoom Controls Overlay -->
+            <div class="zoom-controls" style="position: absolute; bottom: 50px; right: 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;">
+                <button @click="zoomIn" class="btn btn-sm btn-light" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; opacity: 0.8; font-weight: bold;">+</button>
+                <button @click="zoomOut" class="btn btn-sm btn-light" style="border-radius: 50%; width: 32px; height: 32px; padding: 0; opacity: 0.8; font-weight: bold;">-</button>
+                <button @click="resetZoom" class="btn btn-sm btn-light" style="border-radius: 10px; height: 32px; padding: 0 8px; opacity: 0.8; font-size: 10px; font-weight: bold;">1:1</button>
+            </div>
+            
+            <!-- Zoom Indicator -->
+            <div v-if="zoomLevel > 1" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; pointer-events: none;">
+                Zoom: {{ zoomLevel }}x
+            </div>
         </div>
     `
 })
