@@ -17,6 +17,9 @@
 <script src="/cdn/popper.min.js"></script>
 <script src="/cdn/bootstrap.min.js"></script>
 <script src="/cdn/jquery_2.min.js"></script>
+<script>
+  window.jQuery2 = window.jQuery.noConflict(true)
+</script>
 <script src="/cdn/vue.js"></script>
 <script src="js/graphql.js"></script>
 <script src="/cdn/vuex.js"></script>
@@ -61,7 +64,73 @@
     border-radius: 12px;
     border-color: #eee;
   }
+  .mn-toast-container {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 18px;
+    z-index: 1000001;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .mn-toast {
+    background: #fff;
+    border-radius: 18px;
+    padding: 12px 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    border-left: 6px solid #4ecdc4;
+    color: #333;
+    font-weight: 800;
+    font-size: 13px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 180ms ease, transform 180ms ease;
+  }
+  .mn-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .mn-toast.info { border-left-color: #4ecdc4; }
+  .mn-toast.success { border-left-color: #22c55e; }
+  .mn-toast.warning { border-left-color: #f59e0b; }
+  .mn-toast.danger { border-left-color: #ff6b6b; }
 </style>
+<script>
+  (function () {
+    function ensureContainer() {
+      var el = document.getElementById('mn-toast-container')
+      if (el) return el
+      el = document.createElement('div')
+      el.id = 'mn-toast-container'
+      el.className = 'mn-toast-container'
+      document.body.appendChild(el)
+      return el
+    }
+
+    window.mnToast = function (message, variant, timeoutMs) {
+      try {
+        var container = ensureContainer()
+        var toast = document.createElement('div')
+        toast.className = 'mn-toast ' + (variant || 'info')
+        toast.textContent = message || ''
+        container.appendChild(toast)
+        setTimeout(function () { toast.classList.add('show') }, 10)
+        var ttl = typeof timeoutMs === 'number' ? timeoutMs : 2200
+        setTimeout(function () {
+          toast.classList.remove('show')
+          setTimeout(function () {
+            if (toast && toast.parentNode) toast.parentNode.removeChild(toast)
+          }, 220)
+        }, ttl)
+      } catch (e) {
+        alert(message)
+      }
+    }
+  })()
+</script>
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

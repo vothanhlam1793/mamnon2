@@ -57,11 +57,13 @@ Vue.component("create-user", {
         addUser(){
             var that = this;
             if (!this.user.name || !this.user.phone) {
-                alert("Vui lòng nhập tên và số điện thoại");
+                if (window.mnToast) window.mnToast("Vui lòng nhập tên và số điện thoại", "warning");
+                else alert("Vui lòng nhập tên và số điện thoại");
                 return;
             }
             if (!this.user.lophoc || this.user.lophoc.length === 0) {
-                alert("Vui lòng chọn ít nhất 1 lớp");
+                if (window.mnToast) window.mnToast("Vui lòng chọn ít nhất 1 lớp", "warning");
+                else alert("Vui lòng chọn ít nhất 1 lớp");
                 return;
             }
             var ql = [];
@@ -89,16 +91,19 @@ Vue.component("create-user", {
             `
             graphql(QL_CREATE_USER).then(function(data){
                 if (data && data.data && data.data.createUser && data.data.createUser.id) {
-                    alert("Tạo tài khoản thành công");
+                    if (window.mnToast) window.mnToast("Tạo tài khoản thành công", "success");
+                    else alert("Tạo tài khoản thành công");
                     that.user = {};
                     that.lophoc = {};
                     that.$store.dispatch('fetchUsers');
                 } else {
-                    alert("Không tạo được tài khoản, vui lòng kiểm tra lại")
+                    if (window.mnToast) window.mnToast("Không tạo được tài khoản, vui lòng kiểm tra lại", "danger");
+                    else alert("Không tạo được tài khoản, vui lòng kiểm tra lại")
                 }
             }).catch(function(err){
                 console.log(err);
-                alert("Có lỗi khi tạo tài khoản")
+                if (window.mnToast) window.mnToast("Có lỗi khi tạo tài khoản", "danger");
+                else alert("Có lỗi khi tạo tài khoản")
             })
         }
     },
@@ -282,11 +287,13 @@ var app = new Vue({
             var nextIds = (this.editLophocIds || []).slice();
 
             if (!name) {
-                alert("Vui lòng nhập tên bé");
+                if (window.mnToast) window.mnToast("Vui lòng nhập tên bé", "warning");
+                else alert("Vui lòng nhập tên bé");
                 return;
             }
             if (nextIds.length === 0) {
-                alert("Vui lòng chọn ít nhất 1 lớp");
+                if (window.mnToast) window.mnToast("Vui lòng chọn ít nhất 1 lớp", "warning");
+                else alert("Vui lòng chọn ít nhất 1 lớp");
                 return;
             }
 
@@ -305,10 +312,12 @@ var app = new Vue({
                 this.editUserName = "";
                 this.editLophocIds = [];
                 this.$store.dispatch('fetchUsers');
-                alert("Đã cập nhật");
+                if (window.mnToast) window.mnToast("Đã cập nhật", "success");
+                else alert("Đã cập nhật");
             }).catch((e) => {
                 console.log(e);
-                alert("Không cập nhật được");
+                if (window.mnToast) window.mnToast("Không cập nhật được", "danger");
+                else alert("Không cập nhật được");
             });
         },
         resetPassword(user){
@@ -319,11 +328,13 @@ var app = new Vue({
                     updateUser(id: $id, data: { password: $pwd, state: "RESET" }) { id }
                 }
             `, { id: user.id, pwd: user.phone }).then(() => {
-                alert("Đã reset mật khẩu");
+                if (window.mnToast) window.mnToast("Đã reset mật khẩu", "success");
+                else alert("Đã reset mật khẩu");
                 this.$store.dispatch('fetchUsers');
             }).catch((e) => {
                 console.log(e);
-                alert("Không reset được");
+                if (window.mnToast) window.mnToast("Không reset được", "danger");
+                else alert("Không reset được");
             });
         },
         deleteUser(user){
@@ -332,11 +343,13 @@ var app = new Vue({
             graphql(`
                 mutation ($id: ID!) { deleteUser(id: $id) { id } }
             `, { id: user.id }).then(() => {
-                alert("Đã xoá");
+                if (window.mnToast) window.mnToast("Đã xoá", "success");
+                else alert("Đã xoá");
                 this.$store.dispatch('fetchUsers');
             }).catch((e) => {
                 console.log(e);
-                alert("Không xoá được");
+                if (window.mnToast) window.mnToast("Không xoá được", "danger");
+                else alert("Không xoá được");
             });
         }
     },
