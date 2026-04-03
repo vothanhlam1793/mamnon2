@@ -122,14 +122,14 @@ Vue.component('video-hls-android', {
   template: `
         <div class="video-container-wrapper">
             <div class="video-overflow-hidden" 
-                 style="overflow: hidden; border-radius: 8px; position: relative; background: #000; touch-action: none; width: 100%; aspect-ratio: 16/9;">
+                 style="overflow: hidden; border-radius: 8px; position: relative; background: #000; touch-action: none; width: 100%; height: 100%;">
                 
                 <video :id='id'
                     loop
                     autoplay
                     playsinline
                     muted
-                    style="width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block;"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; display: block;"
                     :style="{ 
                         transform: 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + zoomLevel + ')', 
                         transition: isDragging ? 'none' : 'transform 0.1s ease'

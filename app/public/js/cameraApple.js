@@ -117,7 +117,7 @@ Vue.component('video-hls-apple', {
         this.$props.id +
         '" src="' +
         poster +
-        '" style="width:100%; height:100%; object-fit:contain; border-radius:8px;"></div>'
+        '" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; border-radius:8px; display:block;"></div>'
       $('#' + this.$props.id).replaceWith(posterimg)
       this.hlsplayer(data)
     },
@@ -165,7 +165,7 @@ Vue.component('video-hls-apple', {
         loop +
         ' poster="' +
         poster +
-        '" style="width:100%; height:100%; object-fit:cover; border-radius:8px; pointer-events:none; display:block;" data-setup=\'{ }\'>  <source src="' +
+        '" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; border-radius:8px; pointer-events:none; display:block;" data-setup=\'{ }\'>  <source src="' +
         hlsurl +
         "\" type='video/mp4' /></video>"
       $('#' + this.$props.id).replaceWith(vidplayer)
@@ -222,7 +222,7 @@ Vue.component('video-hls-apple', {
     }
   },
   template: `
-        <div class="video-container-wrapper" style="position: relative; touch-action: none; width: 100%; aspect-ratio: 16/9;">
+        <div class="video-container-wrapper" style="position: relative; touch-action: none; width: 100%; height: 100%;">
             <div :id="'border' + id" 
                  style="overflow: hidden; border-radius: 8px; background: #000; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
                 <div :id="id" style="width: 100%; height: 100%;"></div>
