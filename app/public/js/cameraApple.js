@@ -222,7 +222,7 @@ Vue.component('video-hls-apple', {
     }
   },
   template: `
-        <div class="video-container-wrapper" style="position: relative; touch-action: none; width: 100%; height: 100%;">
+        <div class="video-container-wrapper" style="position: relative; touch-action: none;">
             <div :id="'border' + id" 
                  style="overflow: hidden; border-radius: 8px; background: #000; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
                 <div :id="id" style="width: 100%; height: 100%;"></div>

@@ -122,7 +122,7 @@ Vue.component('video-hls-android', {
   template: `
         <div class="video-container-wrapper">
             <div class="video-overflow-hidden" 
-                 style="overflow: hidden; border-radius: 8px; position: relative; background: #000; touch-action: none; width: 100%; height: 100%;">
+                 style="overflow: hidden; border-radius: 8px; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #000; touch-action: none;">
                 
                 <video :id='id'
                     loop
