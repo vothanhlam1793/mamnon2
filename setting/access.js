@@ -1,5 +1,11 @@
 // Access control functions
-const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
+const userIsAdmin = ({ authentication: { item: user } }) =>
+  Boolean(user && (user.isAdmin === true || user.role === 'ADMIN'));
+
+const userIsStaff = ({ authentication: { item: user } }) =>
+  Boolean(user && user.role === 'STAFF');
+
+const userIsStaffOrAdmin = auth => access.userIsAdmin(auth) || userIsStaff(auth);
 const userOwnsItem = ({ authentication: { item: user } }) => {
   if (!user) {
     return false;
@@ -16,6 +22,19 @@ const userIsAdminOrOwner = auth => {
   return isAdmin ? isAdmin : isOwner;
 };
 
-const access = { userIsAdmin, userOwnsItem, userIsAdminOrOwner };
+const userIsStaffOrAdminOrOwner = auth => {
+  const isStaffOrAdmin = userIsStaffOrAdmin(auth);
+  const isOwner = access.userOwnsItem(auth);
+  return isStaffOrAdmin ? true : isOwner;
+};
+
+const access = {
+  userIsAdmin,
+  userIsStaff,
+  userIsStaffOrAdmin,
+  userOwnsItem,
+  userIsAdminOrOwner,
+  userIsStaffOrAdminOrOwner
+};
 
 module.exports.access = access;

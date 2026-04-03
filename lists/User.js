@@ -49,6 +49,9 @@ module.exports = {
                 { value: 'ADMIN', label: 'Quản trị' },
             ],
             defaultValue: 'PARENT',
+            access: {
+                update: access.userIsAdmin,
+            },
         },
         password: {
             type: Password,
@@ -59,10 +62,10 @@ module.exports = {
     },
     // List-level access controls
     access: {
-        read: access.userIsAdminOrOwner,
-        update: access.userIsAdminOrOwner,
-        create: access.userIsAdmin,
-        delete: access.userIsAdmin,
+        read: access.userIsStaffOrAdminOrOwner,
+        update: access.userIsStaffOrAdminOrOwner,
+        create: access.userIsStaffOrAdmin,
+        delete: access.userIsStaffOrAdmin,
         auth: true,
     },
 }
