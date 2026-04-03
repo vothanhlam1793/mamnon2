@@ -1,13 +1,12 @@
-<div class="">
-    <h1>{{ school.stateMode.name }}</h1>
-</div>
-<div>
-    <p>{{school.stateMode.description}}</p>
-    <p>Dự kiến hòan thành: Vào lúc {{getHourFromISOWithOffset(school.stateMode.estimate)}} - ngày <strong>{{convertISOToNormalDate(school.stateMode.estimate)}}</strong>
-    </p>
-    <br>
-    <h5>TRƯỜNG MẦM NON NGỌC HOÀNG</h5>
-    <p>* Điện thoại: <strong>0933 064 964</strong></p>
-    <br>
-    <p v-if="school.stateMode.note">{{school.stateMode.note}}</p>
+<div class="mn-card" style="border-radius: 20px;">
+    <h2 class="mn-title" style="margin-bottom: 6px;">{{ school.stateMode.name }}</h2>
+    <p class="mn-subtitle" style="margin-bottom: 14px;">{{school.stateMode.description}}</p>
+    <div style="font-weight: 700; color: #444; margin-bottom: 12px;">
+        Dự kiến hoàn thành: {{getHourFromISOWithOffset(school.stateMode.estimate)}} - <strong>{{convertISOToNormalDate(school.stateMode.estimate)}}</strong>
+    </div>
+    <div style="font-weight: 800; color: #333; margin-bottom: 6px;">TRƯỜNG MẦM NON NGỌC HOÀNG</div>
+    <div style="margin-bottom: 12px;">Điện thoại: <strong>0933 064 964</strong></div>
+    <div v-if="school.stateMode.note" style="background: #fff3cd; border: 1px solid #ffeeba; border-radius: 16px; padding: 10px 12px; color: #856404; font-weight: 700;">
+        {{school.stateMode.note}}
+    </div>
 </div>

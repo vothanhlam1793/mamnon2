@@ -4,33 +4,42 @@
     </head>
     <body>
         <%- include("menu.ejs"); %>
-        <div class="container-fluid">
-            <div class="jumbotron">
-                <h1>Hỗ trợ khách hàng</h1>
-                <p>Khi gặp sự cố về <strong>đăng nhập</strong> hoặc <strong>cần hỗ trợ</strong>. Hãy liên hệ kỹ thuật qua những kênh sau:</p>
-                
-                <% if (setting) { %>
-                    <p>Gọi điện trực tiếp: <a href="tel: <%= setting.hotline %>" class="btn btn-success">Gọi <%= setting.hotline %></a></p>
-                    <p>Liên lạc qua Zalo: <a href="https://chat.zalo.me/?phone=<%= setting.zaloId %>" class="btn btn-primary">Zalo: <%= setting.zaloId %></a></p>
-                    <p>Người liên hệ: <strong><%= setting.contactName %></strong></p>
-                    
-                    <% if (setting.workDays || setting.workTime) { %>
-                        <p>Thời gian làm việc: <%= setting.workDays || 'Thứ 2 - thứ 6' %></p>
-                        <ul>
-                            <% if (setting.workTime) { %>
-                                <li>Sáng: <%= setting.workTime.split('/')[0] %></li>
-                                <li>Chiều: <%= setting.workTime.split('/')[1] || setting.workTime %></li>
-                            <% } else { %>
-                                <li>Sáng: 8g - 11g30</li>
-                                <li>Chiều: 13g30 - 17g30</li>
-                            <% } %>
-                        </ul>
+        <div class="container mn-container">
+            <div class="mn-card">
+                <h2 class="mn-title">Hỗ trợ khách hàng</h2>
+                <p class="mn-subtitle">Khi gặp sự cố đăng nhập hoặc cần hỗ trợ, vui lòng liên hệ qua các kênh sau.</p>
+                <div class="mt-4">
+                    <% if (setting) { %>
+                        <div class="mb-3">
+                            <div class="font-weight-bold mb-2">Gọi điện trực tiếp</div>
+                            <a href="tel:<%= setting.hotline %>" class="btn btn-success btn-block" style="border-radius: 14px; font-weight: 800;">Gọi <%= setting.hotline %></a>
+                        </div>
+                        <div class="mb-3">
+                            <div class="font-weight-bold mb-2">Liên lạc qua Zalo</div>
+                            <a href="https://chat.zalo.me/?phone=<%= setting.zaloId %>" class="btn btn-primary btn-block" style="border-radius: 14px; font-weight: 800;">Zalo: <%= setting.zaloId %></a>
+                        </div>
+                        <div class="mb-3">
+                            <div class="font-weight-bold">Người liên hệ</div>
+                            <div><strong><%= setting.contactName %></strong></div>
+                        </div>
+
+                        <% if (setting.workDays || setting.workTime) { %>
+                            <div class="mb-2 font-weight-bold">Thời gian làm việc</div>
+                            <div class="mb-2"><%= setting.workDays || 'Thứ 2 - thứ 6' %></div>
+                            <ul class="mb-0">
+                                <% if (setting.workTime) { %>
+                                    <li>Sáng: <%= setting.workTime.split('/')[0] %></li>
+                                    <li>Chiều: <%= setting.workTime.split('/')[1] || setting.workTime %></li>
+                                <% } else { %>
+                                    <li>Sáng: 8g - 11g30</li>
+                                    <li>Chiều: 13g30 - 17g30</li>
+                                <% } %>
+                            </ul>
+                        <% } %>
+                    <% } else { %>
+                        <div class="alert alert-warning" style="border-radius: 16px;">Hệ thống chưa có thông tin liên hệ. Vui lòng liên hệ quản trị viên.</div>
                     <% } %>
-                <% } else { %>
-                    <p>Hệ thống chưa có thông tin liên hệ. Vui lòng liên hệ quản trị viên.</p>
-                <% } %>
-                
-                <p>Trân trọng./.</p>
+                </div>
             </div>
         </div>
         

@@ -20,6 +20,48 @@
 <script src="/cdn/vue.js"></script>
 <script src="js/graphql.js"></script>
 <script src="/cdn/vuex.js"></script>
+<style>
+  body {
+    background-color: #f8f9fa;
+    font-family: 'Nunito', sans-serif;
+  }
+  .mn-container {
+    padding: 24px 12px;
+  }
+  .mn-card {
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    padding: 22px 18px;
+  }
+  .mn-title {
+    color: #ff6b6b;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .mn-subtitle {
+    color: #666;
+    font-weight: 600;
+  }
+  .navbar {
+    background: #fff !important;
+    border-bottom: 1px solid #f2f2f2;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  }
+  .navbar-brand {
+    color: #ff6b6b !important;
+    font-weight: 800;
+  }
+  .nav-link {
+    color: #555 !important;
+    font-weight: 700;
+  }
+  .navbar-toggler {
+    border-radius: 12px;
+    border-color: #eee;
+  }
+</style>
 <script>
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
