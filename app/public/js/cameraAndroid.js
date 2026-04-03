@@ -114,25 +114,25 @@ Vue.component('video-hls-android', {
       } else {
         alert('Trình duyệt không hỗ trợ - Bạn nên sử dụng Chrome để hệ thống hoạt động tốt hơn')
       }
+    },
+    resizeVideo() {
+      // No manual resize needed with the new CSS-based approach
     }
   },
   template: `
         <div class="video-container-wrapper">
             <div class="video-overflow-hidden" 
-                 style="overflow: hidden; border-radius: 12px; position: relative; background: #000; touch-action: none;">
+                 style="overflow: hidden; border-radius: 8px; position: relative; background: #000; touch-action: none; width: 100%; aspect-ratio: 16/9;">
                 
                 <video :id='id'
                     loop
                     autoplay
                     playsinline
                     muted
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none;"
                     :style="{ 
                         transform: 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + zoomLevel + ')', 
-                        transition: isDragging ? 'none' : 'transform 0.1s ease',
-                        width: '100%',
-                        height: 'auto',
-                        display: 'block',
-                        pointerEvents: 'none'
+                        transition: isDragging ? 'none' : 'transform 0.1s ease'
                     }"
                 ></video>
 

@@ -68,10 +68,10 @@
       }
       /* Professional Grid Mode */
       .grid-container {
-        margin: 0 -5px;
+        margin: 0 -2px;
       }
       .grid-item {
-        padding: 5px;
+        padding: 2px;
       }
       .grid-1 .grid-item { flex: 0 0 100%; max-width: 100%; }
       .grid-4 .grid-item { flex: 0 0 50%; max-width: 50%; }
@@ -83,6 +83,8 @@
         margin-bottom: 0;
         background: #000;
         border: 1px solid #333;
+        aspect-ratio: 16/9;
+        overflow: hidden;
       }
       .grid-4 .camera-name, .grid-9 .camera-name {
         position: absolute;
@@ -125,6 +127,19 @@
         color: white;
         box-shadow: 0 3px 8px rgba(255,107,107,0.3);
       }
+      /* Orientation suggestion */
+      .landscape-hint {
+        background: #fff3cd;
+        color: #856404;
+        padding: 8px 15px;
+        border-radius: 12px;
+        font-size: 13px;
+        margin-bottom: 15px;
+        border: 1px solid #ffeeba;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
     </style>
     <script src="static/js/video.js"></script>
     <link href="static/css/video.css" rel="stylesheet" type="text/css" />
@@ -165,6 +180,10 @@
                 <button @click="gridMode = 4" :class="['grid-btn', gridMode == 4 ? 'active' : '']">4</button>
                 <button @click="gridMode = 9" :class="['grid-btn', gridMode == 9 ? 'active' : '']">9</button>
             </div>
+          </div>
+
+          <div v-if="(gridMode == 4 || gridMode == 9) && !isLandscape" class="landscape-hint shadow-sm">
+            <span>📱 Xoay ngang màn hình để xem camera to hơn nhé!</span>
           </div>
 
           <div :class="['row', 'grid-container', 'grid-' + gridMode]">

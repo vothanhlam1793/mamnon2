@@ -6,6 +6,7 @@ var app = new Vue({
     lophoc: {},
     cameras: [],
     gridMode: 1, // 1, 4, 9
+    isLandscape: window.innerWidth > window.innerHeight,
     isLoading: true,
     lydo: 'thu nghiem',
     device:
@@ -75,9 +76,16 @@ var app = new Vue({
     },
     checkRedirect() {
       console.log(this.school)
+    },
+    handleResize() {
+      this.isLandscape = window.innerWidth > window.innerHeight
     }
   },
   created: function () {
     this.getListCameras()
+    window.addEventListener('resize', this.handleResize)
+  },
+  destroyed: function () {
+    window.removeEventListener('resize', this.handleResize)
   }
 })

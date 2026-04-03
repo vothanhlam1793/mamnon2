@@ -113,11 +113,11 @@ Vue.component('video-hls-apple', {
       var posterimg =
         '<div id="' +
         this.$props.id +
-        '"><img id="mo' +
+        '" style="width:100%; height:100%; position:relative;"><img id="mo' +
         this.$props.id +
         '" src="' +
         poster +
-        '" style="width:100%; height:auto; border-radius:12px;"></div>'
+        '" style="width:100%; height:100%; object-fit:contain; border-radius:8px;"></div>'
       $('#' + this.$props.id).replaceWith(posterimg)
       this.hlsplayer(data)
     },
@@ -165,14 +165,12 @@ Vue.component('video-hls-apple', {
         loop +
         ' poster="' +
         poster +
-        '" style="width:100%; height:auto; display:block; border-radius:12px; pointer-events:none;" data-setup=\'{ }\'>  <source src="' +
+        '" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; border-radius:8px; pointer-events:none;" data-setup=\'{ }\'>  <source src="' +
         hlsurl +
         "\" type='video/mp4' /></video>"
       $('#' + this.$props.id).replaceWith(vidplayer)
       vjs.autoSetup()
-      this.resizeVideo()
       this.applyTransform()
-      setInterval(this.resizeVideo, 1500)
     },
     checkm3u8available_helper(hlsdata, depth) {
       if (depth > 20) {
@@ -220,20 +218,14 @@ Vue.component('video-hls-apple', {
       return vars
     },
     resizeVideo() {
-      if ($('#mo' + this.$props.id).length) {
-        // Only resize if not zoomed to avoid breaking CSS transform scale
-        if (this.zoomLevel === 1) {
-          $('#mo' + this.$props.id).width($('#border' + this.$props.id).width())
-          $('#mo' + this.$props.id).height($('#border' + this.$props.id).height())
-        }
-      }
+      // No manual resize needed
     }
   },
   template: `
-        <div class="video-container-wrapper" style="position: relative; touch-action: none;">
+        <div class="video-container-wrapper" style="position: relative; touch-action: none; width: 100%; aspect-ratio: 16/9;">
             <div :id="'border' + id" 
-                 style="overflow: hidden; border-radius: 12px; background: #000; position: relative;">
-                <div :id="id"></div>
+                 style="overflow: hidden; border-radius: 8px; background: #000; position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                <div :id="id" style="width: 100%; height: 100%;"></div>
                 
                 <!-- Touch Overlay: Captures all gestures to prevent video pausing/native player -->
                 <div class="touch-overlay" 
