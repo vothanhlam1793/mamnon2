@@ -1,0 +1,253 @@
+<html>
+  <head>
+    <%- include("../header.ejs", {"title": "Quản trị - Trường / Lớp / Camera"}) %>
+    <style>
+      .mn-page-title {
+        font-weight: 900;
+        color: #ff6b6b;
+        margin: 18px 0 8px;
+        text-align: center;
+      }
+      .mn-panel {
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        padding: 16px 14px;
+      }
+      .mn-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff3f3;
+        border: 1px solid #ffd6d6;
+        color: #ff6b6b;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-weight: 800;
+        margin: 4px 6px 0 0;
+        cursor: pointer;
+        user-select: none;
+      }
+      .mn-actions .btn {
+        border-radius: 12px;
+        font-weight: 800;
+      }
+      .mn-table th {
+        background: #fff9f9;
+        border-color: #ffe5e5;
+      }
+      .mn-table td, .mn-table th {
+        vertical-align: middle;
+      }
+      .mn-muted {
+        color: #777;
+        font-weight: 700;
+      }
+    </style>
+    <script>
+      window.__MN_MANAGE_TAB__ = "<%= tab || 'school' %>"
+    </script>
+  </head>
+  <body>
+    <div class="container-fluid mn-container" id="app">
+      <%- include("menu.ejs", { mode: "admin" }); %>
+
+      <h2 class="mn-page-title">Quản trị trường</h2>
+
+      <div class="mn-panel">
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex flex-wrap" style="gap: 10px;">
+              <a class="btn btn-outline-primary" style="border-radius: 12px; font-weight:800;" href="/manage/school">Thông tin trường</a>
+              <a class="btn btn-outline-primary" style="border-radius: 12px; font-weight:800;" href="/manage/classes">Lớp học</a>
+              <a class="btn btn-outline-primary" style="border-radius: 12px; font-weight:800;" href="/manage/cameras">Camera</a>
+              <button class="btn btn-outline-secondary ml-auto" style="border-radius: 12px; font-weight:800;" @click="refresh">Làm mới</button>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="isLoading" class="mt-3 alert alert-info" style="border-radius: 16px;">
+          Đang tải dữ liệu…
+        </div>
+
+        <div v-if="!isLoading && loadError" class="mt-3 alert alert-danger" style="border-radius: 16px;">
+          Không tải được dữ liệu.
+        </div>
+
+        <div v-if="!isLoading && !loadError">
+          <div v-if="tab === 'school'" class="mt-3">
+            <h4 style="font-weight:900;color:#444;">Cài đặt thông tin trường</h4>
+
+            <div v-if="!currentSchool" class="alert alert-warning mt-3" style="border-radius: 16px;">
+              Chưa có bản ghi trường. Hãy tạo thông tin trường trước.
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label style="font-weight:800;">Tên trường</label>
+                  <input class="form-control" v-model.trim="schoolForm.name" placeholder="Nhập tên trường" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label style="font-weight:800;">Mô tả</label>
+                  <input class="form-control" v-model.trim="schoolForm.description" placeholder="Mô tả ngắn" style="border-radius: 14px;" />
+                </div>
+              </div>
+            </div>
+
+            <div class="mn-actions mt-2 d-flex" style="gap: 10px;">
+              <button class="btn btn-primary" v-if="currentSchool" @click="saveSchool">Lưu</button>
+              <button class="btn btn-primary" v-else @click="createSchool">Tạo trường</button>
+            </div>
+          </div>
+
+          <div v-if="tab === 'classes'" class="mt-3">
+            <h4 style="font-weight:900;color:#444;">Cài đặt / tạo lớp học</h4>
+
+            <div v-if="!currentSchool" class="alert alert-warning mt-3" style="border-radius: 16px;">
+              Cần tạo thông tin trường trước để tạo lớp.
+            </div>
+
+            <div class="row mt-2" v-if="currentSchool">
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label style="font-weight:800;">Tên lớp</label>
+                  <input class="form-control" v-model.trim="newClassName" placeholder="VD: Lớp Mầm 1" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-3 mn-actions d-flex align-items-end">
+                <button class="btn btn-primary btn-block" @click="createClass">Tạo lớp</button>
+              </div>
+            </div>
+
+            <div class="table-responsive mt-3">
+              <table class="table table-bordered mn-table" v-if="classes.length > 0">
+                <thead>
+                  <tr>
+                    <th>Tên lớp</th>
+                    <th>Camera</th>
+                    <th style="width: 220px;">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="lh in classes" :key="lh.id">
+                    <td style="font-weight:800;">{{ lh.name }}</td>
+                    <td>
+                      <span class="badge badge-danger mr-1" v-for="cm in (lh.cameras || [])" :key="cm.id">{{ cm.name }}</span>
+                      <span v-if="!lh.cameras || lh.cameras.length === 0" class="mn-muted">Chưa gán</span>
+                    </td>
+                    <td class="mn-actions">
+                      <div class="d-flex flex-wrap" style="gap: 8px;">
+                        <button class="btn btn-info btn-sm" @click="openEditClass(lh)">Sửa</button>
+                        <button class="btn btn-danger btn-sm" @click="deleteClass(lh)">Xoá</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div v-else class="alert alert-info" style="border-radius: 16px;">
+                Chưa có lớp nào.
+              </div>
+            </div>
+          </div>
+
+          <div v-if="tab === 'cameras'" class="mt-3">
+            <h4 style="font-weight:900;color:#444;">Tạo mới camera cho trường</h4>
+
+            <div class="row mt-2">
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">Tên camera</label>
+                  <input class="form-control" v-model.trim="newCamera.name" placeholder="VD: Camera cổng" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">RTSP</label>
+                  <input class="form-control" v-model.trim="newCamera.rtsp" placeholder="rtsp://..." style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">HLS (tuỳ chọn)</label>
+                  <input class="form-control" v-model.trim="newCamera.hls" placeholder="https://...m3u8" style="border-radius: 14px;" />
+                </div>
+              </div>
+            </div>
+            <div class="mn-actions d-flex" style="gap: 10px;">
+              <button class="btn btn-primary" @click="createCamera">Tạo camera</button>
+            </div>
+
+            <div class="table-responsive mt-3">
+              <table class="table table-bordered mn-table" v-if="cameras.length > 0">
+                <thead>
+                  <tr>
+                    <th>Tên</th>
+                    <th>RTSP</th>
+                    <th>HLS</th>
+                    <th style="width: 160px;">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="cm in cameras" :key="cm.id">
+                    <td style="font-weight:800;">{{ cm.name }}</td>
+                    <td style="max-width: 320px; word-break: break-all;">{{ cm.rtsp }}</td>
+                    <td style="max-width: 320px; word-break: break-all;">{{ cm.hls }}</td>
+                    <td class="mn-actions">
+                      <button class="btn btn-danger btn-sm" @click="deleteCamera(cm)">Xoá</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div v-else class="alert alert-info" style="border-radius: 16px;">
+                Chưa có camera nào.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="editClassModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content" style="border-radius: 18px; overflow: hidden;">
+            <div class="modal-header">
+              <h4 class="modal-title">Sửa lớp</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div v-if="editClass">
+                <div class="form-group">
+                  <label style="font-weight:800;">Tên lớp</label>
+                  <input class="form-control" v-model.trim="editClassName" style="border-radius: 14px;" />
+                </div>
+                <div class="form-group">
+                  <label style="font-weight:800;">Link camera với lớp (bấm để gán/bỏ)</label>
+                  <div>
+                    <span
+                      class="mn-chip"
+                      v-for="cm in cameras"
+                      :key="cm.id"
+                      @click="toggleEditClassCamera(cm)"
+                      :style="isEditClassCameraSelected(cm.id) ? 'background:#ff6b6b;border-color:#ff6b6b;color:#fff;' : ''"
+                    >
+                      {{ cm.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" style="border-radius: 12px; font-weight:800;" data-dismiss="modal">Huỷ</button>
+              <button type="button" class="btn btn-primary" style="border-radius: 12px; font-weight:800;" @click="saveEditClass">Lưu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/manage-admin.js"></script>
+  </body>
+</html>

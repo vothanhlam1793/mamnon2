@@ -9,19 +9,40 @@ function redirectLogin(req, res, next) {
 
 module.exports = keystone => {
   var router = express.Router()
+  async function getCurrentUser(req) {
+    if (!req.session.keystoneItemId) return null
+    const result = await keystone.executeGraphQL({
+      context: keystone.createContext({ skipAccessControl: true }),
+      query: `query ($id: ID!) { User(where: { id: $id }) { id isAdmin role } }`,
+      variables: { id: req.session.keystoneItemId }
+    })
+    return result && result.data && result.data.User
+  }
   async function requireStaffOrAdmin(req, res, next) {
     if (!req.session.keystoneItemId) {
       return res.redirect('/login')
     }
     try {
-      const result = await keystone.executeGraphQL({
-        context: keystone.createContext({ skipAccessControl: true }),
-        query: `query ($id: ID!) { User(where: { id: $id }) { id isAdmin role } }`,
-        variables: { id: req.session.keystoneItemId }
-      })
-      const user = result && result.data && result.data.User
+      const user = await getCurrentUser(req)
       if (user && (user.isAdmin === true || user.role === 'ADMIN' || user.role === 'STAFF')) {
         return next()
+      }
+      return res.redirect('/')
+    } catch (e) {
+      return res.status(500).send('Server error')
+    }
+  }
+  async function requireAdmin(req, res, next) {
+    if (!req.session.keystoneItemId) {
+      return res.redirect('/login')
+    }
+    try {
+      const user = await getCurrentUser(req)
+      if (user && (user.isAdmin === true || user.role === 'ADMIN')) {
+        return next()
+      }
+      if (user && user.role === 'STAFF') {
+        return res.redirect('/staff')
       }
       return res.redirect('/')
     } catch (e) {
@@ -147,9 +168,26 @@ module.exports = keystone => {
     })
     res.send(c)
   })
-  router.get('/manage', requireStaffOrAdmin, function (req, res) {
+  router.get('/staff', requireStaffOrAdmin, function (req, res) {
     res.render('manage/index')
   })
+  router.get('/staff/notify', requireStaffOrAdmin, function (req, res) {
+    res.render('manage/notify')
+  })
+
+  router.get('/manage', requireAdmin, function (req, res) {
+    res.render('manage/admin', { tab: 'school' })
+  })
+  router.get('/manage/school', requireAdmin, function (req, res) {
+    res.render('manage/admin', { tab: 'school' })
+  })
+  router.get('/manage/classes', requireAdmin, function (req, res) {
+    res.render('manage/admin', { tab: 'classes' })
+  })
+  router.get('/manage/cameras', requireAdmin, function (req, res) {
+    res.render('manage/admin', { tab: 'cameras' })
+  })
+
   router.get('/mNotify', requireStaffOrAdmin, function (req, res) {
     res.render('manage/notify')
   })

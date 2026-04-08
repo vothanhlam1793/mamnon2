@@ -1,17 +1,31 @@
 <!-- Grey with black text -->
+<% var _mode = (typeof mode !== 'undefined' && mode) ? mode : 'staff' %>
+<% var _homeHref = _mode === 'admin' ? '/manage' : '/staff' %>
 <nav class="navbar navbar-expand-sm navbar-light">
-    <a class="navbar-brand" href="/manage">Quản trị</a>
+    <a class="navbar-brand" href="<%= _homeHref %>">Quản trị</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavManage">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavManage">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/manage">Tài khoản</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/mNotify">Thông báo</a>
-          </li>
+          <% if (_mode === 'admin') { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/manage/school">Thông tin trường</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/manage/classes">Lớp học</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/manage/cameras">Camera</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/staff">Tài khoản</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/staff/notify">Thông báo</a>
+            </li>
+          <% } %>
         </ul>
     </div>
 </nav>

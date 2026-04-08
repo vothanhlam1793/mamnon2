@@ -1,20 +1,10 @@
 <html>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="images/student.png" type = "image/x-icon">
-        <link rel="stylesheet" href="/cdn/bootstrap.min.css">
-        <script src="/cdn/jquery.min.js"></script>
-        <script src="/cdn/popper.min.js"></script>
-        <script src="/cdn/bootstrap.min.js"></script>
-        <script src="/cdn/jquery_2.min.js"></script>
-        <script src="/cdn/vue.js"></script>
-        <script src="js/graphql.js"></script>
-        <script src="/cdn/vuex.js"></script>
+        <%- include("../header.ejs", {"title": "Quản trị - Thông báo"}) %>
     </head>
     <body>
-        <div class="container-fluid">
-            <%- include("menu.ejs"); %>
+        <div class="container-fluid mn-container">
+            <%- include("menu.ejs", { mode: "staff" }); %>
             <div>
                 <div class="row">
                     <div class="col text-center">
