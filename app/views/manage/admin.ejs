@@ -100,9 +100,19 @@
               </div>
               <div class="col-12 col-lg-6">
                 <div class="form-group">
-                  <label style="font-weight:800;">Logo URL</label>
-                  <input class="form-control" v-model.trim="schoolForm.logo" placeholder="VD: /branding/ngoc-hoang-logo.png" style="border-radius: 14px;" />
-                  <small class="text-muted">Đường dẫn ảnh logo (upload lên thư mục /app/public/branding/)</small>
+                  <label style="font-weight:800;">Logo</label>
+                  <div class="d-flex align-items-center" style="gap: 8px; flex-wrap: wrap;">
+                    <input class="form-control" v-model.trim="schoolForm.logo" placeholder="/uploads/logo.png" style="border-radius: 14px; flex: 1; min-width: 200px;" />
+                    <label class="btn btn-outline-primary" style="border-radius: 12px; font-weight:800; cursor: pointer; white-space: nowrap;">
+                      📤 Upload
+                      <input type="file" accept="image/*" @change="uploadLogo" style="display:none;" />
+                    </label>
+                  </div>
+                  <small class="text-muted">Kích thước đề nghị: 200x200px, tối đa 5MB</small>
+                  <div v-if="uploadingLogo" class="mt-2">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                    <span style="font-size: 12px; color:#888; margin-left: 6px;">Đang upload...</span>
+                  </div>
                 </div>
               </div>
               <div class="col-12 col-lg-3">
@@ -111,6 +121,20 @@
                   <div class="d-flex align-items-center" style="gap: 10px;">
                     <input class="form-control" v-model.trim="schoolForm.color" placeholder="#ff6b6b" style="border-radius: 14px;" />
                     <input type="color" v-model="schoolForm.color" style="width: 44px; height: 44px; border-radius: 10px; border: 2px solid #eee; cursor: pointer; padding: 2px;" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label style="font-weight:800;">Màu gợi ý</label>
+                  <div class="d-flex flex-wrap" style="gap: 8px; margin-top: 4px;">
+                    <span
+                      v-for="c in colorPresets"
+                      :key="c.value"
+                      @click="schoolForm.color = c.value"
+                      :style="'background:' + c.value + '; width:36px; height:36px; border-radius:50%; cursor:pointer; border: 3px solid ' + (schoolForm.color === c.value ? '#333' : 'transparent') + '; box-shadow: 0 2px 6px rgba(0,0,0,0.15);'"
+                      :title="c.label"
+                    ></span>
                   </div>
                 </div>
               </div>

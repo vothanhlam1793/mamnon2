@@ -23,6 +23,19 @@ var app = new Vue({
       schools: [],
       classes: [],
       cameras: [],
+      uploadingLogo: false,
+      colorPresets: [
+        { label: 'Hồng Coral', value: '#ff6b6b' },
+        { label: 'Xanh Teal', value: '#4ecdc4' },
+        { label: 'Xanh Dương', value: '#45b7d1' },
+        { label: 'Xanh Lá', value: '#55efc4' },
+        { label: 'Tím Nhạt', value: '#96ceb4' },
+        { label: 'Cam Nhạt', value: '#ffeaa7' },
+        { label: 'Hồng Đậm', value: '#fd79a8' },
+        { label: 'Vàng Nhạt', value: '#fdcb6e' },
+        { label: 'Xanh Navy', value: '#74b9ff' },
+        { label: 'Đỏ Gạch', value: '#e17055' },
+      ],
       schoolForm: {
         // Thương hiệu
         name: '',
@@ -57,6 +70,44 @@ var app = new Vue({
     }
   },
   methods: {
+    uploadLogo: function (event) {
+      var that = this
+      var file = (event && event.target && event.target.files && event.target.files[0])
+      if (!file) return
+
+      // Validate
+      if (file.size > 5 * 1024 * 1024) {
+        return notify('File quá lớn. Tối đa 5MB', 'warning')
+      }
+      var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
+      if (!allowedTypes.includes(file.type)) {
+        return notify('Chỉ chấp nhận file ảnh (PNG, JPG, GIF, WEBP)', 'warning')
+      }
+
+      that.uploadingLogo = true
+      var formData = new FormData()
+      formData.append('file', file)
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+        .then(function (res) { return res.json() })
+        .then(function (data) {
+          that.uploadingLogo = false
+          if (data && data.url) {
+            that.schoolForm.logo = data.url
+            notify('Upload thành công!', 'success')
+          } else {
+            notify(data && data.error ? data.error : 'Upload thất bại', 'danger')
+          }
+        })
+        .catch(function (e) {
+          that.uploadingLogo = false
+          console.log(e)
+          notify('Upload thất bại', 'danger')
+        })
+    },
     refresh: function () {
       this.loadAll()
     },
