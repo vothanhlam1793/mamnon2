@@ -3,7 +3,7 @@
         <%- include("header.ejs", {"title": "Đăng nhập"}) %>
         <style>
             body {
-                background-color: #fff9f9;
+                background-color: <%= schoolConfig ? schoolConfig.color : '#fff9f9' %>15;
                 font-family: 'Nunito', sans-serif;
             }
             #app_login {
@@ -17,13 +17,13 @@
                 background: white;
                 border-radius: 30px;
                 padding: 40px 30px;
-                box-shadow: 0 15px 35px rgba(255, 107, 107, 0.1);
-                border: 2px solid #fff1f1;
+                box-shadow: 0 15px 35px <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>18;
+                border: 2px solid <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>15;
                 max-width: 450px;
                 width: 100%;
             }
             .login-header h1 {
-                color: #ff6b6b;
+                color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
                 font-weight: 800;
                 font-size: 24px;
                 margin-bottom: 10px;
@@ -45,11 +45,11 @@
                 height: auto;
             }
             .form-control:focus {
-                border-color: #ff6b6b;
-                box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.1);
+                border-color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
+                box-shadow: 0 0 0 0.2rem <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>18;
             }
             .btn-login {
-                background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+                background: linear-gradient(135deg, <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %> 0%, <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>CC 100%);
                 border: none;
                 border-radius: 15px;
                 padding: 12px;
@@ -58,12 +58,12 @@
                 color: white;
                 width: 100%;
                 margin-top: 20px;
-                box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+                box-shadow: 0 5px 15px <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>4D;
                 transition: all 0.3s;
             }
             .btn-login:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+                box-shadow: 0 8px 20px <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>66;
                 color: white;
             }
             .login-footer {
@@ -71,7 +71,7 @@
                 text-align: center;
             }
             .login-footer a {
-                color: #ff6b6b;
+                color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
                 font-weight: 600;
                 text-decoration: none;
             }
@@ -80,7 +80,7 @@
                 height: 80px;
                 margin-bottom: 20px;
                 border-radius: 20px;
-                background: #fff1f1;
+                background: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>10;
                 padding: 10px;
             }
             .status-msg {

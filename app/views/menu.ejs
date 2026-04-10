@@ -1,6 +1,11 @@
 <!-- Grey with black text -->
 <nav class="navbar navbar-expand-sm navbar-light">
-    <a class="navbar-brand" href="/">Camera Mầm Non</a>
+    <a class="navbar-brand" href="/">
+        <% if (schoolConfig && schoolConfig.logo) { %>
+            <img src="<%= schoolConfig.logo %>" alt="<%= schoolConfig.name %>" style="height: 30px; margin-right: 8px;">
+        <% } %>
+        <%= schoolConfig ? schoolConfig.name : 'Camera Mầm Non' %>
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
     </button>

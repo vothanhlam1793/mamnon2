@@ -1,47 +1,40 @@
-// Basic
+/**
+ * ============================================
+ * MAMNON2 - Camera Mầm Non Platform
+ * Entry point - Khởi tạo KeystoneJS
+ * ============================================
+ * Cấu hình theo từng trường qua:
+ * - .env → config kỹ thuật (db, port, secret)
+ * - School DB → config hiển thị (tên, logo, màu)
+ */
+
 const { Keystone } = require('@keystonejs/keystone');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
-
-// Auth - Methods
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
+const { MongooseAdapter } = require('@keystonejs/adapter-mongoose');
 
 // Init data first start server
 const initialiseData = require('./initial-data');
 
-// Data base
-const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
-
-// Setting
-const PROJECT_NAME = 'Mầm non';
-// const adapterConfig = { mongoUri: 'mongodb://localhost/mamnon' };
-
-// File enviroment
-const dotenv = require('dotenv')
-dotenv.config()
-
-const adapterConfig = { 
-  mongoUri: process.env.MONGO_URL,
-  "user": process.env.MONGO_USER,
-  "pass": process.env.MONGO_PASS,
-  authSource: process.env.MONGO_AUTH_SOURCE,
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true
-};
+// Load config
+const config = require('./config');
 
 // Cookie, Session
 const { Session, Cookie } = require("./setting/session");
 
-// Khởi tạo keystone
+// Khởi tạo Keystone
 const keystone = new Keystone({
-  adapter: new Adapter(adapterConfig),
+  adapter: new MongooseAdapter(config.mongoConfig),
   onConnect: process.env.CREATE_TABLES !== 'true' && initialiseData,
   sessionStore: Session.sessionStore,
   cookie: Cookie.cookie,
-  cookieSecret: "CHUNGTANGHIRANGNOLAMOTTHONGSOCANPHAICAITHIEN"
+  cookieSecret: config.COOKIE_SECRET,
 });
 
-// List
+// =============================================
+// SCHEMAS (Database Models)
+// =============================================
 const User = require("./lists/User");
 const Camera = require("./lists/Camera");
 const LopHoc = require("./lists/LopHoc");
@@ -50,7 +43,6 @@ const Meta = require("./lists/Meta");
 const Notify = require("./lists/Notify");
 const Setting = require("./lists/Setting");
 
-// Tạo list user
 keystone.createList('User', User);
 keystone.createList('Camera', Camera);
 keystone.createList('LopHoc', LopHoc);
@@ -59,7 +51,9 @@ keystone.createList('Meta', Meta);
 keystone.createList('Notify', Notify);
 keystone.createList('Setting', Setting);
 
-// Khởi tạo bảo mật
+// =============================================
+// AUTHENTICATION
+// =============================================
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
   list: 'User',
@@ -67,26 +61,29 @@ const authStrategy = keystone.createAuthStrategy({
     identityField: 'username',
     secretField: 'password',
   },
-  // config: { protectIdentities: process.env.NODE_ENV === 'production' },
 });
 
-class CretaApp {
+// =============================================
+// CUSTOM EXPRESS MIDDLEWARE
+// =============================================
+class CreateApp {
   prepareMiddleware({ keystone, dev, distDir }) {
     return require("./app/main").middle(keystone, dev, distDir);
   }
 }
 
-
-// Khởi tạo ứng dụng
+// =============================================
+// EXPORT
+// =============================================
 module.exports = {
   keystone,
   apps: [
     new GraphQLApp(),
     new AdminUIApp({
-      name: PROJECT_NAME,
+      name: 'Mầm Non Admin',
       enableDefaultRoute: false,
       authStrategy,
     }),
-    new CretaApp()
+    new CreateApp()
   ],
 };

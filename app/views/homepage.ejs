@@ -1,6 +1,6 @@
 <html>
   <head>
-    <%- include( "header.ejs", {title: "Camera Mầm Non"}); %>
+    <%- include( "header.ejs", {title: schoolConfig ? schoolConfig.name + " - Camera" : "Camera Mầm Non"}); %>
     <style>
       /* Skeleton Loading Effect */
       .skeleton {
@@ -40,7 +40,7 @@
         padding: 15px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         margin-bottom: 25px;
-        border: 1px solid #eee;
+        border: 1px solid <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>33;
         transition: transform 0.3s;
       }
       .camera-card:hover {
@@ -65,10 +65,10 @@
       }
       .alert-maintenance {
         background: #fff5f5;
-        border: 1px dashed #ff6b6b;
+        border: 1px dashed <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
         border-radius: 20px;
         padding: 20px;
-        color: #ff6b6b;
+        color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
       }
       .maintenance-title {
         font-weight: 800;
@@ -152,9 +152,9 @@
         font-size: 14px;
       }
       .grid-btn.active {
-        background: #ff6b6b;
+        background: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
         color: white;
-        box-shadow: 0 3px 8px rgba(255,107,107,0.3);
+        box-shadow: 0 3px 8px <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>4D;
       }
       /* Orientation suggestion */
       .landscape-hint {

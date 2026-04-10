@@ -1,8 +1,11 @@
 <div class="text-center">
-    <img src="images/student.png" class="login-logo" alt="Logo">
+    <img src="<%= schoolConfig ? schoolConfig.logo : 'images/student.png' %>" class="login-logo" alt="<%= schoolConfig ? schoolConfig.name : 'Logo' %>">
     <div class="login-header">
         <h1>XIN CHÀO!</h1>
-        <p>Chào mừng bạn đến với hệ thống Camera Mầm Non</p>
+        <p>Chào mừng bạn đến với <%= schoolConfig ? schoolConfig.name : 'hệ thống Camera Mầm Non' %></p>
+        <% if (schoolConfig && schoolConfig.tagline) { %>
+            <p style="font-style: italic; color: #999; font-size: 13px;"><%= schoolConfig.tagline %></p>
+        <% } %>
     </div>
 </div>
 
@@ -10,7 +13,7 @@
     <div v-if="status.length > 0" :class="['status-msg', c_status]">
         {{status}}
     </div>
-    
+
     <div class="form-group mb-3">
         <label for="usr">Tên đăng nhập</label>
         <input type="text" class="form-control" id="usr"
@@ -18,7 +21,7 @@
             v-model="username"
         >
     </div>
-    
+
     <div class="form-group mb-4">
         <label for="pwd">Mật khẩu</label>
         <input type="password" class="form-control" id="pwd"
@@ -26,12 +29,12 @@
             v-model="password"
         >
     </div>
-    
+
     <button class="btn-login" @click="login">
         Đăng nhập
     </button>
 
     <div class="login-footer">
         <a href="/info">Bạn quên mật khẩu?</a>
-    </div>    
+    </div>
 </div>

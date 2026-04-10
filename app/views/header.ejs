@@ -1,14 +1,14 @@
-<% if(title == undefined) {var title = "Chua dat tieu de"} %>
+<% if(title == undefined) {var title = schoolConfig ? schoolConfig.name : "Chua dat tieu de"} %>
 <title><%= title %></title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<link rel="icon" href="images/student.png" type = "image/x-icon">
+<link rel="icon" href="<%= schoolConfig ? schoolConfig.logo : '/images/student.png' %>" type = "image/x-icon">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#ff6b6b">
+<meta name="theme-color" content="<%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Mầm Non">
-<link rel="apple-touch-icon" href="images/student.png">
+<meta name="apple-mobile-web-app-title" content="<%= schoolConfig ? schoolConfig.name : 'Mầm Non' %>">
+<link rel="apple-touch-icon" href="<%= schoolConfig ? schoolConfig.logo : '/images/student.png' %>">
 
 <link rel="stylesheet" href="/cdn/bootstrap.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
     padding: 22px 18px;
   }
   .mn-title {
-    color: #ff6b6b;
+    color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>;
     font-weight: 800;
     margin-bottom: 10px;
   }
@@ -53,7 +53,7 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.06);
   }
   .navbar-brand {
-    color: #ff6b6b !important;
+    color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %> !important;
     font-weight: 800;
   }
   .nav-link {
@@ -80,7 +80,7 @@
     border-radius: 18px;
     padding: 12px 14px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-    border-left: 6px solid #4ecdc4;
+    border-left: 6px solid <%= schoolConfig ? schoolConfig.color : '#4ecdc4' %>;
     color: #333;
     font-weight: 800;
     font-size: 13px;
@@ -93,10 +93,10 @@
     opacity: 1;
     transform: translateY(0);
   }
-  .mn-toast.info { border-left-color: #4ecdc4; }
+  .mn-toast.info { border-left-color: <%= schoolConfig ? schoolConfig.color : '#4ecdc4' %>; }
   .mn-toast.success { border-left-color: #22c55e; }
   .mn-toast.warning { border-left-color: #f59e0b; }
-  .mn-toast.danger { border-left-color: #ff6b6b; }
+  .mn-toast.danger { border-left-color: <%= schoolConfig ? schoolConfig.color : '#ff6b6b' %>; }
 </style>
 <script>
   (function () {
