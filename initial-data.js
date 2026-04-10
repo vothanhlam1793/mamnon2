@@ -66,8 +66,8 @@ module.exports = async keystone => {
               password: $password
               username: $phone
               isAdmin: true
-              role: ADMIN
-              state: NORMAL
+              role: "ADMIN"
+              state: "NORMAL"
             }) {
               id
             }
