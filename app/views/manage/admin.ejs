@@ -83,23 +83,106 @@
               Chưa có bản ghi trường. Hãy tạo thông tin trường trước.
             </div>
 
-            <div class="row mt-2">
+            <!-- THƯƠNG HIỆU -->
+            <p style="font-weight:900; color:#888; margin: 16px 0 8px; text-transform: uppercase; font-size: 12px;">Thương hiệu</p>
+            <div class="row">
               <div class="col-12 col-lg-6">
                 <div class="form-group">
                   <label style="font-weight:800;">Tên trường</label>
-                  <input class="form-control" v-model.trim="schoolForm.name" placeholder="Nhập tên trường" style="border-radius: 14px;" />
+                  <input class="form-control" v-model.trim="schoolForm.name" placeholder="VD: Trường Mầm Non Ngọc Hoàng" style="border-radius: 14px;" />
                 </div>
               </div>
               <div class="col-12 col-lg-6">
                 <div class="form-group">
-                  <label style="font-weight:800;">Mô tả</label>
-                  <input class="form-control" v-model.trim="schoolForm.description" placeholder="Mô tả ngắn" style="border-radius: 14px;" />
+                  <label style="font-weight:800;">Slogan / Tagline</label>
+                  <input class="form-control" v-model.trim="schoolForm.tagline" placeholder="VD: Nơi gửi gắm yêu thương" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label style="font-weight:800;">Logo URL</label>
+                  <input class="form-control" v-model.trim="schoolForm.logo" placeholder="VD: /branding/ngoc-hoang-logo.png" style="border-radius: 14px;" />
+                  <small class="text-muted">Đường dẫn ảnh logo (upload lên thư mục /app/public/branding/)</small>
+                </div>
+              </div>
+              <div class="col-12 col-lg-3">
+                <div class="form-group">
+                  <label style="font-weight:800;">Màu chủ đạo</label>
+                  <div class="d-flex align-items-center" style="gap: 10px;">
+                    <input class="form-control" v-model.trim="schoolForm.color" placeholder="#ff6b6b" style="border-radius: 14px;" />
+                    <input type="color" v-model="schoolForm.color" style="width: 44px; height: 44px; border-radius: 10px; border: 2px solid #eee; cursor: pointer; padding: 2px;" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-3 d-flex align-items-center" v-if="schoolForm.logo || schoolForm.color">
+                <div style="text-align: center;">
+                  <label style="font-weight:800; display:block;">Xem trước</label>
+                  <img v-if="schoolForm.logo" :src="schoolForm.logo" style="height: 50px; border-radius: 10px; border: 2px solid #eee;" onerror="this.style.display='none'" />
+                  <div :style="'display:inline-block; width:30px; height:30px; background:' + (schoolForm.color || '#ff6b6b') + '; border-radius: 50%; margin-left: 8px; vertical-align: middle;'"></div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label style="font-weight:800;">Mô tả ngắn</label>
+                  <input class="form-control" v-model.trim="schoolForm.description" placeholder="VD: Hệ thống Camera Trường Mầm Non Ngọc Hoàng" style="border-radius: 14px;" />
+                </div>
+              </div>
+            </div>
+
+            <!-- LIÊN HỆ -->
+            <p style="font-weight:900; color:#888; margin: 16px 0 8px; text-transform: uppercase; font-size: 12px;">Thông tin liên hệ</p>
+            <div class="row">
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">Hotline</label>
+                  <input class="form-control" v-model.trim="schoolForm.hotline" placeholder="VD: 0862270717" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">ID Zalo</label>
+                  <input class="form-control" v-model.trim="schoolForm.zaloId" placeholder="VD: 0862270717" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">Email</label>
+                  <input class="form-control" v-model.trim="schoolForm.email" placeholder="VD: contact@truong.edu.vn" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label style="font-weight:800;">Địa chỉ</label>
+                  <input class="form-control" v-model.trim="schoolForm.address" placeholder="VD: 123 Nguyễn Trãi, Quận 1, TP.HCM" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="form-group">
+                  <label style="font-weight:800;">Website</label>
+                  <input class="form-control" v-model.trim="schoolForm.website" placeholder="VD: https://truong.edu.vn" style="border-radius: 14px;" />
+                </div>
+              </div>
+            </div>
+
+            <!-- GIỜ LÀM VIỆC -->
+            <p style="font-weight:900; color:#888; margin: 16px 0 8px; text-transform: uppercase; font-size: 12px;">Giờ hỗ trợ</p>
+            <div class="row">
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">Giờ làm việc</label>
+                  <input class="form-control" v-model.trim="schoolForm.workTime" placeholder="VD: 7g - 17g" style="border-radius: 14px;" />
+                </div>
+              </div>
+              <div class="col-12 col-lg-4">
+                <div class="form-group">
+                  <label style="font-weight:800;">Ngày làm việc</label>
+                  <input class="form-control" v-model.trim="schoolForm.workDays" placeholder="VD: T2 - T6" style="border-radius: 14px;" />
                 </div>
               </div>
             </div>
 
             <div class="mn-actions mt-2 d-flex" style="gap: 10px;">
-              <button class="btn btn-primary" v-if="currentSchool" @click="saveSchool">Lưu</button>
+              <button class="btn btn-primary" v-if="currentSchool" @click="saveSchool">Lưu thay đổi</button>
               <button class="btn btn-primary" v-else @click="createSchool">Tạo trường</button>
             </div>
           </div>

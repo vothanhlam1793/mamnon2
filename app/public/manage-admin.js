@@ -24,8 +24,21 @@ var app = new Vue({
       classes: [],
       cameras: [],
       schoolForm: {
+        // Thương hiệu
         name: '',
-        description: ''
+        description: '',
+        tagline: '',
+        logo: '',
+        color: '',
+        // Liên hệ
+        hotline: '',
+        zaloId: '',
+        address: '',
+        email: '',
+        website: '',
+        // Giờ hỗ trợ
+        workTime: '',
+        workDays: ''
       },
       newClassName: '',
       newCamera: {
@@ -54,7 +67,21 @@ var app = new Vue({
       graphql(
         `
         query {
-          allSchools { id name description }
+          allSchools {
+            id
+            name
+            description
+            tagline
+            logo
+            color
+            hotline
+            zaloId
+            address
+            email
+            website
+            workTime
+            workDays
+          }
           allLopHocs { id name cameras { id name } }
           allCameras { id name rtsp hls state }
         }
@@ -64,12 +91,36 @@ var app = new Vue({
           that.schools = (result && result.data && result.data.allSchools) || []
           that.classes = (result && result.data && result.data.allLopHocs) || []
           that.cameras = (result && result.data && result.data.allCameras) || []
+
           if (that.currentSchool) {
-            that.schoolForm.name = that.currentSchool.name || ''
-            that.schoolForm.description = that.currentSchool.description || ''
+            var s = that.currentSchool
+            that.schoolForm.name = s.name || ''
+            that.schoolForm.description = s.description || ''
+            that.schoolForm.tagline = s.tagline || ''
+            that.schoolForm.logo = s.logo || ''
+            that.schoolForm.color = s.color || '#ff6b6b'
+            that.schoolForm.hotline = s.hotline || ''
+            that.schoolForm.zaloId = s.zaloId || ''
+            that.schoolForm.address = s.address || ''
+            that.schoolForm.email = s.email || ''
+            that.schoolForm.website = s.website || ''
+            that.schoolForm.workTime = s.workTime || ''
+            that.schoolForm.workDays = s.workDays || ''
           } else {
-            that.schoolForm.name = ''
-            that.schoolForm.description = ''
+            that.schoolForm = {
+              name: '',
+              description: '',
+              tagline: '',
+              logo: '',
+              color: '#ff6b6b',
+              hotline: '',
+              zaloId: '',
+              address: '',
+              email: '',
+              website: '',
+              workTime: '7g - 17g',
+              workDays: 'T2 - T6'
+            }
           }
           that.isLoading = false
         })
@@ -81,16 +132,56 @@ var app = new Vue({
     },
     createSchool: function () {
       var that = this
-      var name = (that.schoolForm.name || '').trim()
-      var description = (that.schoolForm.description || '').trim()
+      var f = that.schoolForm
+      var name = (f.name || '').trim()
       if (!name) return notify('Vui lòng nhập tên trường', 'warning')
+
       graphql(
         `
-        mutation ($name: String, $description: String) {
-          createSchool(data: { name: $name, description: $description }) { id }
+        mutation (
+          $name: String,
+          $description: String,
+          $tagline: String,
+          $logo: String,
+          $color: String,
+          $hotline: String,
+          $zaloId: String,
+          $address: String,
+          $email: String,
+          $website: String,
+          $workTime: String,
+          $workDays: String
+        ) {
+          createSchool(data: {
+            name: $name,
+            description: $description,
+            tagline: $tagline,
+            logo: $logo,
+            color: $color,
+            hotline: $hotline,
+            zaloId: $zaloId,
+            address: $address,
+            email: $email,
+            website: $website,
+            workTime: $workTime,
+            workDays: $workDays
+          }) { id }
         }
       `,
-        { name: name, description: description }
+        {
+          name: f.name,
+          description: f.description,
+          tagline: f.tagline,
+          logo: f.logo,
+          color: f.color,
+          hotline: f.hotline,
+          zaloId: f.zaloId,
+          address: f.address,
+          email: f.email,
+          website: f.website,
+          workTime: f.workTime,
+          workDays: f.workDays
+        }
       )
         .then(function (res) {
           if (res && res.data && res.data.createSchool && res.data.createSchool.id) {
@@ -102,30 +193,72 @@ var app = new Vue({
         })
         .catch(function (e) {
           console.log(e)
-          notify('Không tạo được trường', 'danger')
+          notify('Không tạo được trường: ' + (e && e.message ? e.message : 'lỗi'), 'danger')
         })
     },
     saveSchool: function () {
       var that = this
       if (!that.currentSchool) return
-      var name = (that.schoolForm.name || '').trim()
-      var description = (that.schoolForm.description || '').trim()
+      var f = that.schoolForm
+      var name = (f.name || '').trim()
       if (!name) return notify('Vui lòng nhập tên trường', 'warning')
+
       graphql(
         `
-        mutation ($id: ID!, $name: String, $description: String) {
-          updateSchool(id: $id, data: { name: $name, description: $description }) { id }
+        mutation (
+          $id: ID!,
+          $name: String,
+          $description: String,
+          $tagline: String,
+          $logo: String,
+          $color: String,
+          $hotline: String,
+          $zaloId: String,
+          $address: String,
+          $email: String,
+          $website: String,
+          $workTime: String,
+          $workDays: String
+        ) {
+          updateSchool(id: $id, data: {
+            name: $name,
+            description: $description,
+            tagline: $tagline,
+            logo: $logo,
+            color: $color,
+            hotline: $hotline,
+            zaloId: $zaloId,
+            address: $address,
+            email: $email,
+            website: $website,
+            workTime: $workTime,
+            workDays: $workDays
+          }) { id }
         }
       `,
-        { id: that.currentSchool.id, name: name, description: description }
+        {
+          id: that.currentSchool.id,
+          name: f.name,
+          description: f.description,
+          tagline: f.tagline,
+          logo: f.logo,
+          color: f.color,
+          hotline: f.hotline,
+          zaloId: f.zaloId,
+          address: f.address,
+          email: f.email,
+          website: f.website,
+          workTime: f.workTime,
+          workDays: f.workDays
+        }
       )
         .then(function () {
-          notify('Đã lưu', 'success')
+          notify('Đã lưu thông tin trường', 'success')
           that.loadAll()
         })
         .catch(function (e) {
           console.log(e)
-          notify('Không lưu được', 'danger')
+          notify('Không lưu được: ' + (e && e.message ? e.message : 'lỗi'), 'danger')
         })
     },
     createClass: function () {
@@ -294,4 +427,3 @@ var app = new Vue({
     this.loadAll()
   }
 })
-
