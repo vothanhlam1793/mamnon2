@@ -12,8 +12,8 @@ const crypto = require('crypto');
 // CẤU HÌNH MẶC ĐỊNH CHO TRƯỜNG MỚI
 // =============================================
 const DEFAULT_ADMIN = {
-  phone: 'admin',             // Username đăng nhập
-  password: 'admin',           // ⚠️ ĐỔI SAU KHI deploy
+  phone: 'admin',             // Username đăng nhập (8 ký tự)
+  password: '12345678',        // ⚠️ ĐỔI SAU KHI deploy
   name: 'Quản trị viên',
 };
 
