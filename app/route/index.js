@@ -94,7 +94,7 @@ async function requireStaffOrAdmin(req, res, next) {
     return res.redirect('/login');
   }
   try {
-    const user = await getCurrentUser(req);
+    const user = await getCurrentUser(req, keystone);
     if (user && (user.isAdmin === true || user.role === 'ADMIN' || user.role === 'STAFF')) {
       return next();
     }
@@ -109,7 +109,7 @@ async function requireAdmin(req, res, next) {
     return res.redirect('/login');
   }
   try {
-    const user = await getCurrentUser(req);
+    const user = await getCurrentUser(req, keystone);
     if (user && (user.isAdmin === true || user.role === 'ADMIN')) {
       return next();
     }
@@ -122,10 +122,10 @@ async function requireAdmin(req, res, next) {
   }
 }
 
-async function getCurrentUser(req) {
+async function getCurrentUser(req, keystone) {
   if (!req.session.keystoneItemId) return null;
-  const result = await req.keystone.executeGraphQL({
-    context: req.keystone.createContext({ skipAccessControl: true }),
+  const result = await keystone.executeGraphQL({
+    context: keystone.createContext({ skipAccessControl: true }),
     query: `query ($id: ID!) { User(where: { id: $id }) { id isAdmin role } }`,
     variables: { id: req.session.keystoneItemId },
   });
