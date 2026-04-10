@@ -60,14 +60,14 @@ module.exports = async keystone => {
   if (count === 0) {
     const { errors } = await keystone.executeGraphQL({
       context: keystone.createContext().sudo(),
-      query: `mutation initialUser($password: String, $name: String, $phone: String) {
+      query: `mutation initialUser($password: String, $name: String, $phone: String, $role: UserRoleType, $state: String) {
             createUser(data: {
               name: $name
               password: $password
               username: $phone
               isAdmin: true
-              role: "ADMIN"
-              state: "NORMAL"
+              role: $role
+              state: $state
             }) {
               id
             }
@@ -76,6 +76,8 @@ module.exports = async keystone => {
         password: DEFAULT_ADMIN.password,
         name: DEFAULT_ADMIN.name,
         phone: DEFAULT_ADMIN.phone,
+        role: 'ADMIN',
+        state: 'NORMAL',
       },
     });
 
