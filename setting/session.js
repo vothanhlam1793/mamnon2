@@ -1,9 +1,10 @@
 const MongoStore = require('connect-mongo');
 const { MongoClient } = require('mongodb');
 
+const buildOnly = process.env.BUILD_ONLY === 'true';
 const mongoUrl = process.env.MONGO_URL_SESSION || process.env.MONGO_URL;
 
-const db = new MongoClient(mongoUrl, {
+const db = buildOnly ? null : new MongoClient(mongoUrl, {
   auth: {
     username: process.env.MONGO_USER,
     password: process.env.MONGO_PASS
@@ -14,7 +15,7 @@ const db = new MongoClient(mongoUrl, {
 });
 
 exports.Session = {
-  sessionStore: MongoStore.create({
+  sessionStore: buildOnly ? undefined : MongoStore.create({
     clientPromise: db.connect()
   })
 }

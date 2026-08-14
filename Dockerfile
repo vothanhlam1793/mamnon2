@@ -25,6 +25,7 @@ RUN MONGO_URL=mongodb://build.invalid/mamnon \
     MONGO_PASS=build \
     MONGO_AUTH_SOURCE=admin \
     COOKIE_SECRET=build-only-secret \
+    BUILD_ONLY=true \
     yarn build && yarn cache clean
 
 # Runtime container
