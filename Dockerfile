@@ -20,7 +20,12 @@ RUN yarn install --ignore-engines
 
 ADD . /home/node
 
-RUN yarn build && yarn cache clean
+RUN MONGO_URL=mongodb://build.invalid/mamnon \
+    MONGO_USER=build \
+    MONGO_PASS=build \
+    MONGO_AUTH_SOURCE=admin \
+    COOKIE_SECRET=build-only-secret \
+    yarn build && yarn cache clean
 
 # Runtime container
 FROM node:${NODE_VERSION}-alpine
