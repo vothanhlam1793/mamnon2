@@ -50,8 +50,6 @@ function validateConfig() {
   }
 }
 
-validateConfig();
-
 module.exports = {
   // Server
   PORT,

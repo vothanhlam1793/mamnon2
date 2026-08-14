@@ -13,10 +13,10 @@
   "scripts": {
     "dev_win": "set WINDOWS=1&& cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
     "build_win": "cross-env NODE_ENV=production ./node_modules/.bin/keystone build",
-    "start_win": "cross-env NODE_ENV=production ./node_modules/.bin/keystone start",
+    "start_win": "node -e \"require('./config').validate()\" && cross-env NODE_ENV=production ./node_modules/.bin/keystone start",
     "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true ./node_modules/.bin/keystone dev",
     "build": "cross-env NODE_ENV=production ./node_modules/.bin/keystone build",
-    "start": "cross-env NODE_ENV=production ./node_modules/.bin/keystone start",
+    "start": "node -e \"require('./config').validate()\" && cross-env NODE_ENV=production ./node_modules/.bin/keystone start",
     "create-tables": "cross-env CREATE_TABLES=true keystone create-tables"
   },
   "dependencies": {
