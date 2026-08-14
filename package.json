@@ -11,12 +11,12 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "dev_win": "set WINDOWS=1&& set NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
-    "build_win": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production keystone build",
-    "start_win": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env NODE_ENV=production keystone start",
-    "dev": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=development DISABLE_LOGGING=true keystone dev",
-    "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production keystone build",
-    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production keystone start",
+    "dev_win": "set WINDOWS=1&& cross-env NODE_ENV=development DISABLE_LOGGING=true keystone dev",
+    "build_win": "cross-env NODE_ENV=production ./node_modules/.bin/keystone build",
+    "start_win": "cross-env NODE_ENV=production ./node_modules/.bin/keystone start",
+    "dev": "cross-env NODE_ENV=development DISABLE_LOGGING=true ./node_modules/.bin/keystone dev",
+    "build": "cross-env NODE_ENV=production ./node_modules/.bin/keystone build",
+    "start": "cross-env NODE_ENV=production ./node_modules/.bin/keystone start",
     "create-tables": "cross-env CREATE_TABLES=true keystone create-tables"
   },
   "dependencies": {
