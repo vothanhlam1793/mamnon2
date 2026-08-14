@@ -13,7 +13,7 @@ require('dotenv').config();
 
 const PROJECT_NAME_DEFAULT = 'Mầm Non';
 const PORT = process.env.PORT || 3000;
-const COOKIE_SECRET = process.env.COOKIE_SECRET || 'CHANGE_ME_IN_PRODUCTION';
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
 
 // MongoDB credentials
 const MONGO_URL = process.env.MONGO_URL;
@@ -31,22 +31,26 @@ const APP_LOGO = process.env.APP_LOGO || '/images/student.png';
 function validateConfig() {
   const errors = [];
 
-  if (!MONGO_URL) {
-    errors.push('❌ MONGO_URL chưa được set trong .env');
-  }
-  if (COOKIE_SECRET === 'CHANGE_ME_IN_PRODUCTION') {
-    console.warn('⚠️  COOKIE_SECRET đang dùng giá trị mặc định. Hãy đổi trong .env!');
-  }
+  const required = {
+    MONGO_URL,
+    MONGO_USER,
+    MONGO_PASS,
+    MONGO_AUTH_SOURCE,
+    COOKIE_SECRET,
+  };
+  Object.entries(required).forEach(([name, value]) => {
+    if (!value) errors.push(`${name} chưa được set trong environment`);
+  });
 
   if (errors.length > 0) {
     console.error('\n=== CONFIG ERROR ===');
     errors.forEach(e => console.error(e));
     console.error('===================\n');
-    // throw new Error('Config validation failed');
+    throw new Error('Config validation failed');
   }
 }
 
-// validateConfig(); // Uncomment để bắt buộc validate
+validateConfig();
 
 module.exports = {
   // Server
